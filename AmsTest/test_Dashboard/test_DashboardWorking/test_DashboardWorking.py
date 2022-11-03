@@ -223,112 +223,195 @@ def test_VerifyAllClickables(test_setup):
             time.sleep(TimeSpeed)
             # ---------------------------------------------------------------------------------
 
-            #---------------------------Verify Number of Total Assets--------------------------------
-            PageName = "Number of total assets"
-            Ptitle1 = ""
-            try:
-                NumOfTotalAssets = driver.find_element_by_xpath("//div[@data-test-id='202207110710030992974']//button").text
-                ExcelNumOfTotalAssets = sheet2.cell(2, 5).value
-                print(NumOfTotalAssets)
-                time.sleep(2)
-                print(ExcelNumOfTotalAssets)
-                if ExcelNumOfTotalAssets == int(NumOfTotalAssets) :
-                    TestResult.append(PageName + " are verified successfully")
-                    TestResultStatus.append("Pass")
-                else:
-                    TestResult.append(
-                        PageName + " are not verified. Because number of total assets on 'AMS actions page' are : " + str(ExcelNumOfTotalAssets) + " and Number of total assets found on 'Dashboard page' are : " + str(
-                            NumOfTotalAssets))
-                    TestResultStatus.append("Fail")
-            except Exception as err1:
-                print(err1)
-            print()
-            time.sleep(TimeSpeed)
-            #---------------------------------------------------------------------------------
+            # #---------------------------Verify Number of Total Assets--------------------------------
+            # PageName = "Number of total assets"
+            # Ptitle1 = ""
+            # try:
+            #     NumOfTotalAssets = driver.find_element_by_xpath("//div[@data-test-id='202207110710030992974']//button").text
+            #     ExcelNumOfTotalAssets = sheet2.cell(2, 5).value
+            #     print(NumOfTotalAssets)
+            #     time.sleep(2)
+            #     print(ExcelNumOfTotalAssets)
+            #     if ExcelNumOfTotalAssets == int(NumOfTotalAssets) :
+            #         TestResult.append(PageName + " are verified successfully")
+            #         TestResultStatus.append("Pass")
+            #     else:
+            #         TestResult.append(
+            #             PageName + " are not verified. Because number of total assets on 'AMS actions page' are : " + str(ExcelNumOfTotalAssets) + " and Number of total assets found on 'Dashboard page' are : " + str(
+            #                 NumOfTotalAssets))
+            #         TestResultStatus.append("Fail")
+            # except Exception as err1:
+            #     print(err1)
+            # print()
+            # time.sleep(TimeSpeed)
+            # #---------------------------------------------------------------------------------
+            #
+            # # ---------------------------Verify Number of Working Assets--------------------------------
+            # PageName = "Number of working assets"
+            # Ptitle1 = ""
+            # try:
+            #     NumOfWorkingAssets = driver.find_element_by_xpath("//div[@data-test-id='202207110545480825508']//button").text
+            #     ExcelNumOfWorkingAssets = sheet2.cell(2, 7).value
+            #     print(NumOfWorkingAssets)
+            #     time.sleep(2)
+            #     print(ExcelNumOfWorkingAssets)
+            #     if ExcelNumOfWorkingAssets == int(NumOfWorkingAssets):
+            #         TestResult.append(PageName + " are verified successfully")
+            #         TestResultStatus.append("Pass")
+            #     else:
+            #         TestResult.append(PageName + " are not verified. Because number of working assets on 'AMS actions page' are : "+str(ExcelNumOfWorkingAssets)+ " and Number of working assets found on 'Dashboard page' are : "+str(NumOfWorkingAssets))
+            #         TestResultStatus.append("Fail")
+            # except Exception as err2:
+            #     print(err2)
+            # print()
+            # time.sleep(TimeSpeed)
+            # # ---------------------------------------------------------------------------------
+            #
+            # # ---------------------------Verify Number of Broken Assets--------------------------------
+            # PageName = "Number of broken assets"
+            # Ptitle1 = ""
+            # try:
+            #     NumOfBrokenAssets = driver.find_element_by_xpath(
+            #         "//div[@data-test-id='202207110624490670651']//button").text
+            #     ExcelNumOfBrokenAssets = sheet2.cell(2, 8).value
+            #     print(NumOfBrokenAssets)
+            #     time.sleep(2)
+            #     print(ExcelNumOfBrokenAssets)
+            #     if ExcelNumOfBrokenAssets == int(NumOfBrokenAssets):
+            #         TestResult.append(PageName + " are verified successfully")
+            #         TestResultStatus.append("Pass")
+            #     else:
+            #         TestResult.append(PageName + " are not verified. Because number of broken assets on 'AMS actions page' are : " + str(
+            #                 ExcelNumOfBrokenAssets) + " and number of broken assets found on Dashboard are : " + str(NumOfBrokenAssets))
+            #         TestResultStatus.append("Fail")
+            # except Exception as err3:
+            #     print(err3)
+            # print()
+            # time.sleep(TimeSpeed)
+            # # ---------------------------------------------------------------------------------
+            #
+            # # ------Scrolling Page----------------------------------------------------------
+            # for scrolldown in range(1, 10):
+            #     time.sleep(2)
+            #     try:
+            #         driver.find_element_by_xpath(
+            #             "//table[@id='grid-desktop-paginator']//tr/td[7]//button")
+            #         break
+            #     except Exception:
+            #         # ActionChains(driver).key_down(Keys.).perform()
+            #         print("Inside Excep")
+            #         ActionChains(driver).key_down(Keys.PAGE_DOWN).perform()
+            #         print("Page Down")
+            #         pass
+            # # -----------------------------------------------------------------------------------------------
+            #
+            # # ---------------------------Verify pagination clicks in Recent activities Table-----------------------------
+            # PageName = "Recent activities table pagination"
+            #
+            # try:
+            #     # -------Getting total number of pages in Recent activities table-----
+            #     Page_Count1 = driver.find_element_by_xpath(
+            #         "//label[@data-test-id='20141007100658002115508']").text
+            #     NumOfClicks1 = int(Page_Count1)
+            #     print("Page_Count1 "+str(Page_Count1))
+            #     print("NumOfClicks1 "+str(NumOfClicks1))
+            #
+            #     # ----For loop to page clicks----
+            #     for i in range(1, NumOfClicks1):
+            #         driver.find_element_by_xpath("//table[@id='grid-desktop-paginator']//tr/td[7]//button").click()
+            #         time.sleep(1)
+            #         ActivePageNum = driver.find_element_by_xpath("//input[@id='pyGridActivePage']").get_attribute('value')
+            #         ActivePageNum = int(ActivePageNum)
+            #         if ActivePageNum == NumOfClicks1:
+            #             print("Recent activities table pagination is working")
+            #             TestResult.append(PageName + " is working fine for " + str(NumOfClicks1)+ " pages")
+            #             TestResultStatus.append("Pass")
+            #         else:
+            #             pass
+            # except Exception as err:
+            #     print(err)
+            #     TestResult.append(PageName + " is not working")
+            #     TestResultStatus.append("Fail")
+            # print()
+            # # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify Number of Working Assets--------------------------------
-            PageName = "Number of working assets"
+            # ---------------------------Verify Organization chart tab click--------------------------------
+            PageName = "Organization chart tab"
             Ptitle1 = ""
             try:
-                NumOfWorkingAssets = driver.find_element_by_xpath("//div[@data-test-id='202207110545480825508']//button").text
-                ExcelNumOfWorkingAssets = sheet2.cell(2, 7).value
-                print(NumOfWorkingAssets)
+                driver.find_element_by_xpath("//div[@data-test-id='202207110634440928719']//button").click()
                 time.sleep(2)
-                print(ExcelNumOfWorkingAssets)
-                if ExcelNumOfWorkingAssets == int(NumOfWorkingAssets):
-                    TestResult.append(PageName + " are verified successfully")
+                Org_Chart_Title = driver.find_element_by_xpath("//span[@id='modaldialog_hd_title']").text
+                print(Org_Chart_Title)
+                if Org_Chart_Title in "        Organization Chart       ":
+                    TestResult.append(PageName + " is clickable")
                     TestResultStatus.append("Pass")
-                else:
-                    TestResult.append(PageName + " are not verified. Because number of working assets on 'AMS actions page' are : "+str(ExcelNumOfWorkingAssets)+ " and Number of working assets found on 'Dashboard page' are : "+str(NumOfWorkingAssets))
-                    TestResultStatus.append("Fail")
-            except Exception as err2:
-                print(err2)
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
-
-            # ---------------------------Verify Number of Broken Assets--------------------------------
-            PageName = "Number of broken assets"
-            Ptitle1 = ""
-            try:
-                NumOfBrokenAssets = driver.find_element_by_xpath(
-                    "//div[@data-test-id='202207110624490670651']//button").text
-                ExcelNumOfBrokenAssets = sheet2.cell(2, 8).value
-                print(NumOfBrokenAssets)
-                time.sleep(2)
-                print(ExcelNumOfBrokenAssets)
-                if ExcelNumOfBrokenAssets == int(NumOfBrokenAssets):
-                    TestResult.append(PageName + " are verified successfully")
-                    TestResultStatus.append("Pass")
-                else:
-                    TestResult.append(PageName + " are not verified. Because number of broken assets on 'AMS actions page' are : " + str(
-                            ExcelNumOfBrokenAssets) + " and number of broken assets found on Dashboard are : " + str(NumOfBrokenAssets))
-                    TestResultStatus.append("Fail")
             except Exception as err3:
+                TestResult.append(PageName + " is not clickable")
+                TestResultStatus.append("Fail")
                 print(err3)
             print()
             time.sleep(TimeSpeed)
             # ---------------------------------------------------------------------------------
 
-            # ------Scrolling Page----------------------------------------------------------
-            for scrolldown in range(1, 10):
-                time.sleep(2)
-                try:
-                    driver.find_element_by_xpath(
-                        "//table[@id='grid-desktop-paginator']//tr/td[7]//button")
-                    break
-                except Exception:
-                    # ActionChains(driver).key_down(Keys.).perform()
-                    print("Inside Excep")
-                    ActionChains(driver).key_down(Keys.PAGE_DOWN).perform()
-                    print("Page Down")
-                    pass
-            # -----------------------------------------------------------------------------------------------
-
-            # ---------------------------Verify pagination clicks in Recent activities Table-----------------------------
-            PageName = "Recent activities table pagination"
-
-            # --------Getting number of rows each page------
+            # ---------------------------Verify Operators List click--------------------------------
+            PageName = "Operators List"
+            Ptitle1 = ""
             try:
-                # -------Getting total number of pages in Recent activities table-----
-                Page_Count1 = driver.find_element_by_xpath(
-                    "//label[@data-test-id='20141007100658002115508']").text
-                NumOfClicks1 = int(Page_Count1)
-                print("Page_Count1 "+str(Page_Count1))
-                print("NumOfClicks1 "+str(NumOfClicks1))
+                driver.find_element_by_xpath("//div[@data-layout-id='202209230519300692']").click()
+                time.sleep(2)
+                Full_Name = driver.find_element_by_xpath("//div[text()='Full Name']").is_displayed()
+                print("Full_Name is "+str(Full_Name))
+                if Full_Name == True:
+                    TestResult.append(PageName + " is clickable")
+                    TestResultStatus.append("Pass")
+            except Exception as err3:
+                TestResult.append(PageName + " is not clickable")
+                TestResultStatus.append("Fail")
+                print(err3)
+            print()
+            time.sleep(TimeSpeed)
+            # ---------------------------------------------------------------------------------
+
+            # ---------------------------Verify pagination clicks in Operators List Table-----------------------------
+            PageName = "Operators List table pagination"
+
+            try:
+                # -------Getting total number of pages in Operators List table-----
+                Page_Count2 = driver.find_element_by_xpath("//div[@data-test-id='202207120559580902804']//label[@data-test-id='20141007100658002115508']").text
+                NumOfClicks2 = int(Page_Count2)
+                print("Page_Count2 " + str(Page_Count2))
+                print("NumOfClicks2 " + str(NumOfClicks2))
 
                 # ----For loop to page clicks----
-                for i in range(1, NumOfClicks1):
-                    driver.find_element_by_xpath("//table[@id='grid-desktop-paginator']//tr/td[7]//button").click()
-                    time.sleep(1)
-                    ActivePageNum = driver.find_element_by_xpath("//input[@id='pyGridActivePage']").get_attribute('value')
-                    ActivePageNum = int(ActivePageNum)
-                    if ActivePageNum == NumOfClicks1:
-                        print("Pagination is working")
-                        TestResult.append(PageName + " is working fine for " + str(NumOfClicks1)+ " pages")
-                        TestResultStatus.append("Pass")
-                    else:
-                        pass
+                for i in range(1, NumOfClicks2):
+                    Operators_List_Rows = driver.find_elements_by_xpath(
+                        "//table[@data-test-id='202207120559580902804-layout']/tbody//table//tr/td[1]/div")
+                    NumRows2 = int(len(Operators_List_Rows))
+                    print("NumRows1 " + str(NumRows2))
+                    for ii in range(NumRows2):
+                        Is_Present = driver.find_element_by_xpath(
+                            "//table[@data-test-id='202207120559580902804-layout']/tbody//table//tr[" + str(
+                                ii+2) + "]/td[1]/div").is_displayed()
+                        if Is_Present == True:
+                            time.sleep(1)
+                            User_Name = driver.find_element_by_xpath(
+                                "//table[@data-test-id='202207120559580902804-layout']/tbody//table//tr[" + str(
+                                    ii+2) + "]/td[1]/div").text
+                            time.sleep(1)
+                            print(User_Name)
+                            driver.find_element_by_xpath("//div[@data-test-id='202207120559580902804']//button[@title='Next Page']").click()
+                            time.sleep(0.5)
+                            #print(sheet2.cell(2, 9).value)
+
+                            # if User_Name == sheet2.cell(2, 9).value:
+                            #     #print("User_Name " + User_Name)
+                            #     print("Operators List table pagination is working")
+                            #     TestResult.append(PageName + " is working fine for " + str(NumOfClicks2) + " pages")
+                            #     TestResultStatus.append("Pass")
+                        else:
+                            pass
+
             except Exception as err:
                 print(err)
                 TestResult.append(PageName + " is not working")
