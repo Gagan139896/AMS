@@ -236,7 +236,7 @@ def test_VerifyAllClickables(test_setup):
             # ---------------------------Verify Filter search in Asset Type table-----------------------------
             PageName = "Asset type table Filter"
             try:
-                if sheet2.cell(2,1).value==None:
+                if sheet2.cell(3,1).value==None:
                     TestResult.append("Asset type name is not found in excel sheet. Need to add new asset type first")
                     TestResultStatus.append("Pass")
                     # ---------------------------Adding New Asset Type--------------------------------
@@ -282,7 +282,7 @@ def test_VerifyAllClickables(test_setup):
                         TestResultStatus.append("Pass")
                         Verify_Asset_Type = driver.find_element_by_xpath("//h2[text()='Add/Update Asset Type']").is_displayed()
                         if Verify_Asset_Type == True:
-                            sheet2.cell(2, 1).value = Asset_Type_Name
+                            sheet2.cell(3, 1).value = Asset_Type_Name
                             wb2.save(loc2)
                     except Exception:
                         TestResult.append(PageName + "add process not working properly")
@@ -301,7 +301,7 @@ def test_VerifyAllClickables(test_setup):
 
                     #--------------Entering value in Search text field----------
                     Search_Text_Field = driver.find_element_by_xpath("//input[@data-test-id='201411181100280377101613']")
-                    Search_Text_Field.send_keys(sheet2.cell(2, 1).value)
+                    Search_Text_Field.send_keys(sheet2.cell(3, 1).value)
                     TestResult.append("Data is entered in filter")
                     TestResultStatus.append("Pass")
 
@@ -330,7 +330,7 @@ def test_VerifyAllClickables(test_setup):
                         Search_Filter.click()
                         time.sleep(2)
                         driver.find_element_by_xpath("//a[@id='clearFilter']").click()
-                        sheet2.cell(2,1).value=None
+                        sheet2.cell(3,1).value=None
                         wb2.save(loc2)
                     else:
                         #-----------Clicking on delete icon-----------
@@ -348,7 +348,7 @@ def test_VerifyAllClickables(test_setup):
                     #----------Verifying deleted record by applying filter again-----
                     try:
                         Search_Filter.click()
-                        Search_Text_Field.send_keys(sheet2.cell(2, 1).value)
+                        Search_Text_Field.send_keys(sheet2.cell(3, 1).value)
                         Filter_Apply_Btn.click()
                         for load in range(LONG_TIMEOUT):
                             try:
@@ -368,7 +368,7 @@ def test_VerifyAllClickables(test_setup):
                         pass
 
                     #----Saving Asset type records in excel-----
-                    sheet2.cell(2, 1).value = None
+                    sheet2.cell(3, 1).value = None
                     wb2.save(loc2)
             except Exception:
                 pass
@@ -411,7 +411,7 @@ def test_VerifyAllClickables(test_setup):
                 #print(PageName + "  is working fine for " + str(NumOfClicks1) + " pages and No. of records found are : " + str(NumOfAssetType))
                 TestResult.append(PageName + "  is working fine for " + str(NumOfClicks1) + " pages and No. of records found are : " + str(counter))
                 TestResultStatus.append("Pass")
-                sheet2.cell(2,4).value = counter
+                sheet2.cell(3,4).value = counter
                 wb2.save(loc2)
             except Exception as err:
                 print(err)
@@ -424,13 +424,13 @@ def test_VerifyAllClickables(test_setup):
             PageName = "Asset table Filter"
 
             #----Checking asset type name in excel sheet---------
-            if sheet2.cell(2,1)==None:
+            if sheet2.cell(3,1)==None:
                 TestResult.append("Asset type is not found in excel sheet. Need to skip Asset add process")
                 TestResultStatus.append("Pass")
             else:
                 try:
                     #---Checking asset name in excel sheet----
-                    if sheet2.cell(2, 2).value == None:
+                    if sheet2.cell(3, 2).value == None:
                         TestResult.append("Asset name is not found in excel sheet. Need to add new asset first")
                         TestResultStatus.append("Pass")
 
@@ -476,7 +476,7 @@ def test_VerifyAllClickables(test_setup):
                                 #------Selecting asset type-------------
                                 elif ca==3:
                                     AssetType = driver.find_element_by_xpath("//div[@data-test-id='20200506135148097754']//div[@class='layout-body clearfix  ']/div/div["+str(ca+1)+"]//input[@type='text']")
-                                    AssetType.send_keys(sheet2.cell(2,1).value)
+                                    AssetType.send_keys(sheet2.cell(3,1).value)
                                     AssetType.send_keys(Keys.DOWN)
                                     AssetType.send_keys(Keys.ENTER)
                                     time.sleep(2)
@@ -513,7 +513,7 @@ def test_VerifyAllClickables(test_setup):
                             time.sleep(3)
                             VerifyRecord = driver.find_element_by_xpath("//div[@data-test-id='201712290453170848504']//div[@data-test-id='201808160754420438797']/div[1]/span[text()='AMC and Breakdown Cases List']").is_displayed()
                             if VerifyRecord == True:
-                                sheet2.cell(2, 2).value = Asset_Name
+                                sheet2.cell(3, 2).value = Asset_Name
                                 wb2.save(loc2)
                             driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[2]/a").click()
                             for load in range(LONG_TIMEOUT):
@@ -533,7 +533,7 @@ def test_VerifyAllClickables(test_setup):
                         Search_Filter = driver.find_element_by_xpath("//th[@data-attribute-name='Asset']/div/span/a")
                         Search_Filter.click()
                         Search_Text_Field = driver.find_element_by_xpath("//input[@data-test-id='201411181100280377101613']")
-                        Search_Text_Field.send_keys(sheet2.cell(2, 2).value)
+                        Search_Text_Field.send_keys(sheet2.cell(3, 2).value)
                         Filter_Apply_Btn = driver.find_element_by_xpath("//ul[@class='pz-po-c-ul']/li[3]/div/button[1]")
                         Filter_Apply_Btn.click()
                         for load in range(LONG_TIMEOUT):
@@ -556,7 +556,7 @@ def test_VerifyAllClickables(test_setup):
                             Search_Filter.click()
                             time.sleep(2)
                             driver.find_element_by_xpath("//a[@id='clearFilter']").click()
-                            sheet2.cell(2, 2).value = None
+                            sheet2.cell(3, 2).value = None
                             wb2.save(loc2)
                         else:
                             # -----------Clicking on delete icon-----------
@@ -574,7 +574,7 @@ def test_VerifyAllClickables(test_setup):
                         # ----------Verifying deleted asset record by applying filter again-----
                         try:
                             Search_Filter.click()
-                            Search_Text_Field.send_keys(sheet2.cell(2, 1).value)
+                            Search_Text_Field.send_keys(sheet2.cell(3, 1).value)
                             Filter_Apply_Btn.click()
                             for load in range(LONG_TIMEOUT):
                                 try:
@@ -592,7 +592,7 @@ def test_VerifyAllClickables(test_setup):
                                 driver.find_element_by_xpath("//a[@id='clearFilter']").click()
                         except Exception:
                             pass
-                        sheet2.cell(2, 2).value=None
+                        sheet2.cell(3, 2).value=None
                         wb2.save(loc2)
                 except Exception:
                     pass
@@ -636,9 +636,9 @@ def test_VerifyAllClickables(test_setup):
                 TotalAssets = Is_Yes  + Is_No
                 TestResult.append(PageName + "  is working fine for " +str(NumOfClicks2)+ " pages and No. of records found are : " +str(TotalAssets))
                 TestResultStatus.append("Pass")
-                sheet2.cell(2, 5).value = TotalAssets
-                sheet2.cell(2, 7).value = Is_Yes
-                sheet2.cell(2, 8).value = Is_No
+                sheet2.cell(3, 5).value = TotalAssets
+                sheet2.cell(3, 7).value = Is_Yes
+                sheet2.cell(3, 8).value = Is_No
                 wb2.save(loc2)
             except Exception as errr:
                 print(errr)
@@ -826,7 +826,7 @@ def test_VerifyAllClickables(test_setup):
             #         driver.find_element_by_xpath("//button[text()='  Submit ']").click()
             #         TestResult.append(PageName + "added successfully. Activity name is : " + Activity_Name)
             #         TestResultStatus.append("Pass")
-            #         sheet2.cell(2, 3).value = Activity_Name
+            #         sheet2.cell(3, 3).value = Activity_Name
             #         wb2.save(loc2)
             #     except Exception:
             #         pass
@@ -886,7 +886,7 @@ def test_VerifyAllClickables(test_setup):
             else:
                 try:
                     # ---Checking activity name in excel sheet----
-                    if sheet2.cell(2, 3).value == None:
+                    if sheet2.cell(3, 3).value == None:
                         TestResult.append("Activity name is not found in excel sheet. Need to add new activity first")
                         TestResultStatus.append("Pass")
 
@@ -957,7 +957,7 @@ def test_VerifyAllClickables(test_setup):
                                 TestResult.append(PageName1 + "added successfully. Activity name is : " + Activity_Name)
                                 TestResultStatus.append("Pass")
 
-                                sheet2.cell(2, 3).value = Activity_Name
+                                sheet2.cell(3, 3).value = Activity_Name
                                 wb2.save(loc2)
                             except Exception:
                                 pass
@@ -973,7 +973,7 @@ def test_VerifyAllClickables(test_setup):
                         Search_Filter.click()
                         Search_Text_Field = driver.find_element_by_xpath(
                             "//input[@data-test-id='201411181100280377101613']")
-                        Search_Text_Field.send_keys(sheet2.cell(2, 3).value)
+                        Search_Text_Field.send_keys(sheet2.cell(3, 3).value)
                         Filter_Apply_Btn = driver.find_element_by_xpath(
                             "//ul[@class='pz-po-c-ul']/li[3]/div/button[1]")
                         Filter_Apply_Btn.click()
@@ -1004,7 +1004,7 @@ def test_VerifyAllClickables(test_setup):
                                     break
                             time.sleep(2)
                             driver.find_element_by_xpath("//a[@id='clearFilter']").click()
-                            sheet2.cell(2, 3).value = None
+                            sheet2.cell(3, 3).value = None
                             wb2.save(loc2)
                         else:
                             # -----------Clicking on delete icon-----------
@@ -1022,7 +1022,7 @@ def test_VerifyAllClickables(test_setup):
                         # ----------Verifying deleted asset record by applying filter again-----
                         try:
                             Search_Filter.click()
-                            Search_Text_Field.send_keys(sheet2.cell(2, 1).value)
+                            Search_Text_Field.send_keys(sheet2.cell(3, 1).value)
                             Filter_Apply_Btn.click()
                             for load in range(LONG_TIMEOUT):
                                 try:
@@ -1048,7 +1048,7 @@ def test_VerifyAllClickables(test_setup):
                                 driver.find_element_by_xpath("//a[@id='clearFilter']").click()
                         except Exception:
                             pass
-                        sheet2.cell(2, 3).value = None
+                        sheet2.cell(3, 3).value = None
                         wb2.save(loc2)
                 except Exception:
                     pass
@@ -1086,7 +1086,7 @@ def test_VerifyAllClickables(test_setup):
                     driver.find_element_by_xpath("//div[@data-test-id='202206080844470310974']//table[@id='grid-desktop-paginator']//td[7]//button").click()
                 TestResult.append(PageName + "  is working fine for " + str(NumOfClicks3) + " pages and No. of records found are : " + str(counter2))
                 TestResultStatus.append("Pass")
-                sheet2.cell(2, 6).value = counter2
+                sheet2.cell(3, 6).value = counter2
                 wb2.save(loc2)
             except Exception as errr:
                 print(errr)

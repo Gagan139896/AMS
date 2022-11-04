@@ -11,6 +11,7 @@ import pytest
 from selenium import webdriver
 import allure
 from selenium.webdriver import ActionChains
+from selenium.webdriver.common.alert import Alert
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from sys import platform
@@ -35,8 +36,8 @@ def test_setup():
   global TestDirectoryName
   global path
 
-  TestName = "test_TransferAssignment"
-  description = "This test scenario is to verify working of Transfer Assignment page"
+  TestName = "test_CreateBreakdownWorking"
+  description = "This test scenario is to verify working of breakdown creation process"
   TestResult = []
   TestResultStatus = []
   TestFailStatus = []
@@ -44,7 +45,7 @@ def test_setup():
   TestDirectoryName = "test_CreateBreakdownWorking"
   global Exe
   Exe="Yes"
-  Directory = 'test_TansferAssignment/'
+  Directory = 'test_CreateBreakdown/'
   if platform == "linux" or platform == "linux2":
       path = '/home/legion/office 1wayit/AVER/AverTest1/' + Directory
   elif platform == "win32" or platform == "win64":
@@ -74,7 +75,7 @@ def test_setup():
           driver = webdriver.Chrome(
               executable_path="/home/legion/office 1wayit/AVER/AverTest1/chrome/chromedriverLinux1")
       elif platform == "win32" or platform == "win64":
-          driver = webdriver.Chrome(executable_path="/AmsTest/chrome/chromedriver.exe")
+          driver = webdriver.Chrome(executable_path="D:/AMS/AmsTest/chrome/chromedriver.exe")
 
       driver.implicitly_wait(10)
       driver.maximize_window()
@@ -194,201 +195,217 @@ def test_VerifyAllClickables(test_setup):
         TimeSpeed = 2
         SHORT_TIMEOUT = 3
         LONG_TIMEOUT = 60
-        LOADING_ELEMENT_XPATH = "//body[@class='sidebar-xs loader_overlay']"
-        try:
-            # ---------------------------Verify Settings icon click-----------------------------
-            PageName = "Settings icon"
-            Ptitle1 = ""
-            try:
-                driver.find_element_by_xpath("//i[@class='icon-paragraph-justify3']/parent::a").click()
-                time.sleep(2)
-                driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[11]/a").click()
-                time.sleep(2)
+        LOADING_ELEMENT_XPATH = "//div[@class='loader']"
+        loc2 = ("D:/AMS/AmsTest/test_AmsActions/test_AmsActionsWorking/DataRecord.xlsx")
+        wb2 = openpyxl.load_workbook(loc2)
+        sheet2 = wb2.active
 
+        try:
+            #-----------------------Clicking on plus icon and create breakdown icon-------------
+            Expected_Res = "BreakDown"
+            try:
+                driver.find_element_by_xpath("//li[@data-test-id='201812201359010458611']").click()
+                time.sleep(2)
+                driver.find_element_by_xpath("//li[@title='BreakDown']").click()
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
+
+                # ---------------Selecting asset type-----------------------------------------------
+                asset_type = driver.find_element_by_xpath("//input[@id='264249ac']")
+                asset_type.send_keys(sheet2.cell(3,1).value)  # laptop
                 time.sleep(2)
-                TestResult.append(PageName + " is present in left menu and able to click")
-                TestResultStatus.append("Pass")
-            except Exception as ee:
-                print(ee)
-                TestResult.append(PageName + " is not present")
+                asset_type.send_keys(Keys.DOWN)
+                asset_type.send_keys(Keys.ENTER)
+                time.sleep(5)
+                print("asset type done")
+                #---------------------------------------------------------------------------------------------
+
+                # ---------------Selecting asset name-----------------------------------------------
+                asset_name = driver.find_element_by_xpath("//input[@id='50156d96']")
+                asset_name.send_keys(sheet2.cell(3,2).value)
+                time.sleep(2)
+                asset_name.send_keys(Keys.DOWN)
+                time.sleep(2)
+                asset_name.send_keys(Keys.ENTER)
+                time.sleep(5)
+
+                # # ---------------Selecting random bd type-----------------------------------------------
+                # bd_type = driver.find_element(By.XPATH,"//div[@class='content-item content-field item-3 remove-left-spacing remove-right-spacing flex required']//select[@id='9fa2b67b']")
+                # time.sleep(2)
+                # bd_type.click()
+                # time.sleep(5)
+                #
+                # bd_types = driver.find_elements(By.XPATH,"//div[@class='content-item content-field item-3 remove-left-spacing remove-right-spacing flex required']//select[@id='9fa2b67b']/option")
+                # len_bd_types = len(bd_types)
+                # print(len_bd_types)
+                #
+                # random_bdtype = random.randint(1, len_bd_types)
+                # print("random bd type" + str(random_bdtype))
+                #
+                # bd = Select(bd_type)
+                # bd.select_by_index(random_bdtype)
+                # time.sleep(5)
+                # print("breakdown done")
+
+                # ---------------Selecting hardcoded breakdown type--------------------------------------------------------
+                driver.find_element_by_xpath("//div[@class='content-item content-field item-3 remove-left-spacing remove-right-spacing flex required']//select[@id='9fa2b67b']").click()
+                BDown_type = driver.find_element_by_xpath("//div[@class='content-item content-field item-3 remove-left-spacing remove-right-spacing flex required']//select[@id='9fa2b67b']")
+                bd = Select(BDown_type)
+                bd.select_by_index(1)
+                time.sleep(5)
+                print("breakdown done")
+
+                # ---------------Entering Issue Description-----------------------------------------------
+                driver.find_element_by_xpath("//div[@class='content-item content-field item-4 remove-left-spacing remove-right-spacing flex']//textarea[@id='9638b72b']").send_keys(
+                    "Test description")
+                time.sleep(5)
+
+                # --------------Clicking Attachment Button-------------------------------------------------
+
+                attachment = driver.find_element_by_xpath("//div[@class='content-item content-field item-5 remove-left-spacing remove-right-spacing flex flex-row dataValueWrite']//button[@type='button'][normalize-space()='Attach content']").click()
+                time.sleep(TimeSpeed)
+                SelectFileBtn = driver.find_element_by_xpath("//input[@id='$PpyAttachmentPage$ppxAttachName']")
+                SelectFileBtn.send_keys("C://Users/crochet-08/Downloads/Gagandeep-200-BIG.png")
+                time.sleep(TimeSpeed)
+                driver.find_element_by_id("ModalButtonSubmit").click()
+                time.sleep(TimeSpeed)
+
+                # ---------------Clicking Submit Button with valid details-------------------------------------------------
+                driver.find_element_by_xpath("//button[normalize-space()='Submit']").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                try:
+                    Bd_Id = driver.find_element_by_xpath("//span[@data-test-id='20190510022618055338234']").text
+                    print(Bd_Id)
+                    sheet2.cell(11,1).value = Bd_Id
+                    wb2.save(loc2)
+                except Exception:
+                    print()
+                time.sleep(5)
+
+                # # -------------To verify sucessful breakdown case creation by getting "Breakdwn" text------------
+                #
+                # Act_Res = driver.find_element_by_xpath("(//h1[normalize-space()='BreakDown'])[1]").text
+                # print(Act_Res)
+                # if Act_Res == Expected_Res:
+                #     # -------------Storing test result--------------------------------------------------
+                #     print("Breakdown case created successfully")
+                #     TestResult.append("Breakdown case created successfully with valid details")
+                #     TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append("Breakdown case creation process failed")
                 TestResultStatus.append("Fail")
             print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
+            time.sleep(5)
 
-            # ---------------------------Verify working of Additional Contact Types button under system settings-----------------------------
-            PageName = "Additional Contact Types button"
-            ExpectedDict = {}
-            SuccessList = []
-            PendingList = []
-            try:
-                try:
-                    driver.find_element_by_xpath("//a[text()='Additional Contact Types']").click()
-                    TestResult.append(PageName + " is clickable on settings page")
-                    TestResultStatus.append("Pass")
-                    for load in range(LONG_TIMEOUT):
-                        try:
-                            if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                                time.sleep(0.5)
-                        except Exception:
-                            break
-                    Rows = driver.find_elements_by_xpath("//table[@id='client_status_data']/tbody/tr")
-                    Rows = len(Rows)
-                    print(Rows)
-                    TestResult.append(
-                        "Number of records found on Additional Contact Types settings section is: " + str(Rows))
-                    TestResultStatus.append("Pass")
-                    for tr in range (Rows):
-                        Keys1 = driver.find_element_by_xpath("//table[@id='client_status_data']/tbody/tr["+str(tr+1)+"]/td[3]").text
-                        print(Keys1)
-                        time.sleep(0.25)
-                        Values = driver.find_element_by_xpath("//table[@id='client_status_data']/tbody/tr["+str(tr+1)+"]/td[2]").text
-                        print(Values)
-                        time.sleep(0.25)
-                        if Keys1 == "Success":
-                            SuccessList.append(Values)
-                            ExpectedDict[Keys1] = SuccessList
-                        elif Keys1 == "Pending":
-                            PendingList.append(Values)
-                            ExpectedDict[Keys1] = PendingList
+            # # ----------------Getting validation messages for mandatory fields on form submission--------------
+            # Test_Component = "Submit Button"
+            # Expected_Validation = " 'Value cannot be blank' "
+            # try:
+            #     # -----------Navigation to breakdown creation page---------------------------
+            #     # ---------------to click on plus icon (create) and breakdown button-----------
+            #     driver.find_element_by_xpath("//li[@data-test-id='201812201359010458611']").click()
+            #     time.sleep(3)
+            #     driver.find_element_by_xpath("//li[@data-test-id='201812201359010337524']").click()
+            #     time.sleep(3)
+            #
+            #     # ----------Submittimg blank form------------------------------------
+            #     driver.find_element_by_xpath("//button[normalize-space()='Submit']").click()
+            #     print(Test_Component + " clicked")
+            #     time.sleep(2)
+            #
+            #     # ----------Handling alert msg to correct flagged fields-----------------------------------------------------------------------------
+            #     alert = Alert(driver)
+            #     alert.accept()
+            #     time.sleep(3)
+            #
+            #     # -----------Getting validation messages-------------------------------------------------------------------
+            #     # ---------------asset type field------------------------------------------------------------------------
+            #     asset_type_val = driver.find_element_by_xpath("//div[@id='$PpyWorkPage$pInitiatePM$pAssetTypeError']//span[@class='iconError dynamic-icon-error'][normalize-space()='Value cannot be blank']").text
+            #     if asset_type_val in Expected_Validation:
+            #         TestResult.append(
+            #             Expected_Validation + " validation message is present when user clicked " + Test_Component + " without entering asset type")
+            #         TestResultStatus.append("Pass")
+            #         print(Expected_Validation + " validation message is present for Asset type field")
+            #     else:
+            #         print(Expected_Validation + " validation message is not present for Asset type field")
+            #
+            #     # ---------------asset name field--------------------------------------------------------------------------
+            #     asset_name_val = driver.find_element_by_xpath("//div[@id='$PpyWorkPage$pInitiatePM$pNameError']//span[@class='iconError dynamic-icon-error'][normalize-space()='Value cannot be blank']").text
+            #     if asset_name_val in Expected_Validation:
+            #         TestResult.append(
+            #             Expected_Validation + " validation message is present when user clicked " + Test_Component + " without entering asset name")
+            #         TestResultStatus.append("Pass")
+            #         print(Expected_Validation + " validation message is present for Asset name field")
+            #     else:
+            #         print(Expected_Validation + " validation message is not present for Asset name field")
+            #
+            #     # ---------------Breakdown type dropdown-----------------------------------------------
+            #     breakdown_type_val = driver.find_element_by_xpath("//div[@id='$PpyWorkPage$pInitiatePM$pNameError']//span[@class='iconError dynamic-icon-error'][normalize-space()='Value cannot be blank']").text
+            #     if breakdown_type_val in Expected_Validation:
+            #         TestResult.append(
+            #             Expected_Validation + " is present when user clicked " + Test_Component + " without entering Breakdown type")
+            #         TestResultStatus.append("Pass")
+            #         print(
+            #             Expected_Validation + " validation message is present when user clicked for Breakdown type field")
+            #     else:
+            #         print(Expected_Validation + " validation message is not present for Breakdown type field")
+            # except Exception:
+            #     print("@@@---111---@@@")
+            #     TestResult.append(
+            #         Expected_Validation + " validation message is not present when user clicked " + Test_Component + " without entering Asset name, type and breakdown type")
+            #     TestResultStatus.append("Fail")
+            print()
+            time.sleep(3)
 
-                    TestResult.append(
-                        "Below items found for success status : \n" + str(SuccessList))
-                    TestResultStatus.append("Pass")
-                    TestResult.append(
-                        "Below items found for pending status : \n" + str(PendingList))
-                    TestResultStatus.append("Pass")
-                except Exception:
-                    pass
+            # # ----------------Scenario 3--------------------------------------------
+            # # -----------To verify cancel button functionality to cancel breakdown case creation process ----------------------------
+            # Test_Component = "Cancel Button"
+            # try:
+            #     # -----------Navigation to breakdown creation page---------------------------
+            #     # ---------------to click on plus icon (create) and breakdown button-----------
+            #     driver.refresh()
+            #     time.sleep(5)
+            #     driver.find_element_by_xpath("//li[@data-test-id='201812201359010458611']").click()
+            #     time.sleep(2)
+            #     driver.find_element_by_xpath("//li[@data-test-id='201812201359010337524']").click()
+            #     for load in range(LONG_TIMEOUT):
+            #         try:
+            #             if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+            #                 time.sleep(0.5)
+            #         except Exception:
+            #             break
+            #     # ----------Clicking cancel button-----------------------------------------------------------------------
+            #     driver.find_element_by_xpath("//button[@title='Cancel']").click()
+            #     time.sleep(2)
+            #     # ----------Clicking delete button-----------------------------------------------------------------------
+            #     driver.find_element_by_xpath("//button[@name='pyCloseCase_pyWorkPage_7']").click()
+            #     time.sleep(2)
+            #     TestResult.append(Test_Component + " is clickable")
+            #     TestResultStatus.append("Pass")
+            #     print(Test_Component + " is clickable")
+            # except Exception:
+            #     TestResult.append(Test_Component + " is not clickable")
+            #     TestResultStatus.append("Fail")
+            # print()
+            # time.sleep(TimeSpeed)
+            #
+            # # ---------------------------------------------------------------------------------
 
-                try:
-                    driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[3]/a/i").click()
-                    TestResult.append("Client listing icon is clicked")
-                    TestResultStatus.append("Pass")
-                    for load in range(LONG_TIMEOUT):
-                        try:
-                            if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                                time.sleep(0.5)
-                        except Exception:
-                            break
-                except Exception:
-                    pass
-
-                #------------------Fetch Client name from Excel--------------------
-
-                #------------------------------------------------------------------
-
-                NameToOpen = "BitsInGlass1"
-                driver.find_element_by_xpath("//input[@id='searchFilter']").send_keys(NameToOpen)
-
-                ActionChains(driver).key_down(Keys.ENTER).key_up(Keys.ENTER).perform()
-                TestResult.append(
-                    "Searching client in application")
-                TestResultStatus.append("Pass")
-                for load in range(LONG_TIMEOUT):
-                    try:
-                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                            time.sleep(0.5)
-                    except Exception:
-                        break
-                driver.find_element_by_xpath("//table[@id='table_data']/tbody/tr[1]/td[text()='"+NameToOpen+"']/a").click()
-                for load in range(LONG_TIMEOUT):
-                    try:
-                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                            time.sleep(0.5)
-                    except Exception:
-                        break
-                TestResult.append(
-                    "Clicking on client name to navigate client details page")
-                TestResultStatus.append("Pass")
-
-                #---------Checking Additional Contacts section in Client------------------
-                driver.find_element_by_xpath("//a[text()='Additional Contacts']").click()
-                for load in range(LONG_TIMEOUT):
-                    try:
-                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                            time.sleep(0.5)
-                    except Exception:
-                        break
-                TestResult.append(
-                    "Additional Contacts section is clicked on client details page")
-                TestResultStatus.append("Pass")
-
-                #-------------Clicking on Create New button---------------------
-                driver.find_element_by_xpath("//a[text()='Create New']").click()
-                for load in range(LONG_TIMEOUT):
-                    try:
-                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                            time.sleep(0.5)
-                    except Exception:
-                        break
-                TestResult.append(
-                    "Clicking on Create New button")
-                TestResultStatus.append("Pass")
-
-                #------Fetching dropdown values---------------
-                ActSuccessElements=[]
-                l = driver.find_element_by_name("relationship")
-                d = Select(l)
-                for opt in d.options:
-                    print(opt.text)
-                    if opt.text !="Select Relationship":
-                        ActSuccessElements.append(opt.text)
-
-                #------Comparing results-----------
-                print(len(ExpectedDict["Success"]))
-                print(len(ActSuccessElements))
-                TestResult.append(
-                    "Comparing number of items found on Additional Contacts type settings section and Relationship to client dropdown")
-                TestResultStatus.append("Pass")
-
-                if len(ActSuccessElements)==len(ExpectedDict["Success"]):
-                    print("Items number matched")
-                    TestResult.append(
-                        "Items number matched")
-                    TestResultStatus.append("Pass")
-                else:
-                    print("Items number does not match")
-                    TestResult.append(
-                        "Items number does not match")
-                    TestResultStatus.append("Fail")
-
-
-                print(ExpectedDict["Success"])
-                print(ActSuccessElements)
-                TestResult.append(
-                    "Comparing list of items found on Additional Contacts type settings section and Relationship to client dropdown")
-                TestResultStatus.append("Pass")
-
-                if ActSuccessElements==ExpectedDict["Success"]:
-                    print("Items list matched")
-                    TestResult.append("Items list matched")
-                    TestResultStatus.append("Pass")
-                else:
-                    print("Items list does not match")
-                    TestResult.append(
-                        "Items list does not match")
-                    TestResultStatus.append("Fail")
-
-            except Exception as wr:
-                print(wr)
-                TestResult.append("Additional contacts types settings section is not working correctly")
-                TestResultStatus.append("Fail")
-            # ---------------------------------------------------------------------------------
-
-            # ---------------------------------------------------------------------------------
 
         except Exception as err:
-            print(err)
-            TestResult.append("Settings is not working correctly. Below error found\n"+str(err))
-            TestResultStatus.append("Fail")
-            pass
+                print(err)
+                TestResult.append("Breakdown creation process is not working correctly. Below error found\n"+str(err))
+                TestResultStatus.append("Fail")
+                pass
 
     else:
         print()

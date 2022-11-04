@@ -220,7 +220,7 @@ def test_VerifyAllClickables(test_setup):
         #--------------
         try:
             AssetType = driver.find_element_by_xpath("//input[@data-test-id='202204250843470340998']")
-            AssetType.send_keys(sheet2.cell(2, 1).value)
+            AssetType.send_keys(sheet2.cell(3, 1).value)
             AssetType.send_keys(Keys.DOWN)
             AssetType.send_keys(Keys.ENTER)
             time.sleep(5)
@@ -237,7 +237,7 @@ def test_VerifyAllClickables(test_setup):
         # -------------
         try:
             Asset_Text_360 = driver.find_element_by_xpath("//div[@section_index='259']//tbody/tr[2]/td[2]/span").text
-            if sheet2.cell(2, 1).value == Asset_Text_360:
+            if sheet2.cell(3, 1).value == Asset_Text_360:
                 print("360 search is working fine for asset type")
         except Exception as srch:
             print(srch)
