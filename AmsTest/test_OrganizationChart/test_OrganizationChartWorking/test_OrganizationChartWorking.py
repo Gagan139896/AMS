@@ -1,6 +1,7 @@
 import datetime
 import math
 import re
+import string
 import time
 import openpyxl
 from datetime import datetime,date
@@ -40,8 +41,8 @@ def test_setup():
   global TestDirectoryName
   global path
 
-  TestName = "test_OrganizationChart"
-  description = "This test scenario is to verify content at Organization Chart page"
+  TestName = "test_OrganizationChartWorking"
+  description = "This test scenario is to verify working of Organization Chart page"
   TestResult = []
   TestResultStatus = []
   TestFailStatus = []
@@ -79,7 +80,7 @@ def test_setup():
           driver = webdriver.Chrome(
               executable_path="/home/legion/office 1wayit/AVER/AverTest1/chrome/chromedriverLinux1")
       elif platform == "win32" or platform == "win64":
-          driver = webdriver.Chrome(executable_path="/AmsTest/chrome/chromedriver.exe")
+          driver = webdriver.Chrome(executable_path="D:/AMS/AmsTest/chrome/chromedriver.exe")
 
       driver.implicitly_wait(10)
       driver.maximize_window()
@@ -90,8 +91,7 @@ def test_setup():
 
   yield
   if Exe == "Yes":
-      time_change = datetime.timedelta(hours=5)
-      new_time = datetime.datetime.now() + time_change
+      new_time = datetime.datetime.now()
       ctReportHeader = new_time.strftime("%d %B %Y %I %M%p")
 
       ct = new_time.strftime("%d_%B_%Y_%I_%M%p")
@@ -199,218 +199,118 @@ def test_VerifyAllClickables(test_setup):
         TimeSpeed = 2
         SHORT_TIMEOUT = 3
         LONG_TIMEOUT = 60
-        LOADING_ELEMENT_XPATH = "//body[@class='sidebar-xs loader_overlay']"
+        LOADING_ELEMENT_XPATH = "//div[@class='loader']"
+        loc2 = ("D:/AMS/AmsTest/test_AmsActions/test_AmsActionsWorking/DataRecord.xlsx")
+        wb2 = openpyxl.load_workbook(loc2)
+        sheet2 = wb2.active
+
         try:
-            print()
-            # ----------------Fecthing Client name from the ref Data sheet--------------------
-            ExcelFileName2 = "RefData"
-            locx2 = (path + 'Ref/' + ExcelFileName2 + '.xlsx')
-            wbx2 = openpyxl.load_workbook(locx2)
-            sheetx2 = wbx2.active
-
+            #---------------To verify Organisation Chart icon click-----------------
+            PageName = "Organisation Chart icon"
+            Ptitle1 = "Organisation Chart"
             try:
-                UsernameNameXL = sheetx2.cell(1, 4).value
-                print(UsernameNameXL)
-                PasswordXL = sheetx2.cell(1,5).value
-                print(PasswordXL)
-                if UsernameNameXL == None or PasswordXL == None:
-                    print("Username and / or Password not found in ref sheet")
-                    TestResult.append("Username and / or Password not found in ref sheet")
-                    TestResultStatus.append("Fail")
-                    driver.close()
-                else:
-                    # ------------Login to Client Portal----------------
-                    driver.maximize_window()
-                    driver.get("https://averreplica.1wayit.com/login")
-                    enter_username(UsernameNameXL)
-                    enter_password(PasswordXL)
-                    driver.find_element_by_xpath("//button[@type='submit']").click()
-                    time.sleep(2)
-                    try:
-                        LoginError=driver.find_element_by_xpath("//span[@class='invalid-feedback']/strong").text
-                        print("User is not able to login. Below error found\n"+LoginError)
-                        TestResult.append("User is not able to login. Below error found\n"+LoginError)
-                        TestResultStatus.append("Fail")
-                    except Exception:
-                        TestResult.append("User login successfully by below ID\n"+UsernameNameXL)
-                        TestResultStatus.append("Pass")
-                        pass
-
-            except Exception:
-                print("Ref sheet is not able to read, please check the ref doc sheet")
-                TestResult.append("Ref sheet is not able to read, please check the ref doc sheet")
-                TestResultStatus.append("Fail")
-                driver.close()
-
-            try:
-                FLNameXL = sheetx2.cell(3, 1).value
-                print(FLNameXL)
-                TestResult.append("Name to match- "+FLNameXL)
-                TestResultStatus.append("Pass")
-
-                NDISXL = sheetx2.cell(3,2).value
-                print(NDISXL)
-                TestResult.append("NDIS to match- " + NDISXL)
-                TestResultStatus.append("Pass")
-
-                PhoneXL = sheetx2.cell(3, 3).value
-                print(PhoneXL)
-                if PhoneXL==None:
-                    PhoneXL="NA"
-                TestResult.append("Phone number to match- " + PhoneXL)
-                TestResultStatus.append("Pass")
-
-                EmailXL = sheetx2.cell(3, 4).value
-                print(EmailXL)
-                TestResult.append("Email to match- " + EmailXL)
-                TestResultStatus.append("Pass")
-
-                AddressXL = sheetx2.cell(3, 5).value
-                print(AddressXL)
-                TestResult.append("Address to match- " + AddressXL)
-                TestResultStatus.append("Pass")
-
-                PlanNameXL = sheetx2.cell(3, 6).value
-                print(PlanNameXL)
-
-                if FLNameXL == None or NDISXL == None or PhoneXL == None or EmailXL == None or AddressXL == None:
-                    print("Client details - First name, Last name, NDIS, Email, or Phone number does not found in ref sheet")
-                    TestResult.append("Client details - First name, Last name, NDIS, Email, or Phone number does not found in ref sheet")
-                    TestResultStatus.append("Fail")
-                    driver.close()
-            except Exception:
-                print("Terminating execution as Client details - First name, Last name, NDIS, Email, or Phone number does not found in ref sheet")
-                TestResult.append("Client details - First name, Last name, NDIS, Email, or Phone number does not found in ref sheet")
-                TestResultStatus.append("Fail")
-                driver.close()
-
-            TestResult.append("--------------------------------------------------------------------------")
-            TestResultStatus.append("Pass")
-            # ---------------------------Verify Client Portal Dashboard Data-----------------------------
-            PageName = "Client Portal Dashboard page"
-            TitleExpected="Aver Planning"
-            try:
-                #driver.find_element_by_xpath("//i[@class='icon-paragraph-justify3']/parent::a").click()
-                TitleFound=driver.title
-                time.sleep(2)
+                driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[5]/a").click()
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
+                driver.find_element_by_xpath("//input[@title='Enter text to search']").click()
+                PageTitle1 = driver.find_element_by_xpath("//h2[@class='header-title']").text
+                print("PageTitle1 is : "+ str(PageTitle1) )
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present in left menu and able to click")
+                TestResult.append(PageName + " is present in left menu and able to click")
+                TestResultStatus.append("Pass")
+            except Exception:
+                print(PageName + " is not clickable")
+                TestResult.append(PageName + " is not clickable")
+                TestResultStatus.append("Fail")
+            # -----------------------------------------------------------------------------------------
 
-                time.sleep(2)
-                if TitleFound==TitleExpected:
-                    print(PageName + " opened successfully")
-                    TestResult.append(PageName + " opened successfully")
+            #---------------Adding New Operator------------------------
+            PageName = "Add New Operator button"
+            Ptitle1 = "Organisation Chart"
+            try:
+                driver.find_element_by_xpath("//a[text()='Add New Operator']").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                PageTitle1 = driver.find_element_by_xpath("//span[text()='        Create Operator       ']").is_displayed()
+                if PageTitle1 == True:
+                    print(PageName + " is clickable")
+                    TestResult.append(PageName + " is clickable")
                     TestResultStatus.append("Pass")
-                else:
-                    TestResult.append(PageName + " is not able to open")
-                    TestResultStatus.append("Fail")
-            except Exception as ee:
-                print(ee)
-                TestResult.append(PageName + " is not able to open")
+            except Exception as errr:
+                print(errr)
+                print(PageName + " is not clickable")
+                TestResult.append(PageName + " is not clickable")
                 TestResultStatus.append("Fail")
+            print()
+            #---------------------------------------------------------------
 
-            # ------------------------Fetching Data present at Dashboard page --------------
+            #-----------Operator adding process--------------------------------
+            PageName = "Operator adding process"
             try:
-                FoundFirstName=driver.find_element_by_xpath("//table[@id='clients-list']/tbody/tr[1]/td[2]/a").text
-                print(FoundFirstName)
-                TestResult.append("First Name found- "+FoundFirstName)
-                TestResultStatus.append("Pass")
-            except Exception:
-                print("No data found for First Name")
-                TestResult.append("No data found for First Name")
+                # ---------------Organization selection------------------------------------------------------------
+                Org_DDL_Count = driver.find_elements_by_xpath("//select[@data-test-id='202205261231470602516']/option")
+                Org_Rand = random.randrange(1, len(Org_DDL_Count))
+                Org_DDL = Select(driver.find_element_by_xpath("//select[@data-test-id='202205261231470602516']"))
+                Org_DDL.select_by_index(Org_Rand)
+                time.sleep(1)
+                #-----------------------------------------------------------------------------------
+                # ------------------------------ENTERING USER ID----------------------------------------------
+                User_ID = ''.join(random.choices(string.ascii_uppercase + string.digits, k=5))
+                User_ID = "User_" + User_ID
+                driver.find_element_by_xpath("//input[@data-test-id='202205101241230880204']").send_keys(User_ID)
+                time.sleep(1)
+                #-----------------------------------------------------------------------------------------------
+                # ------------------------------ENTERING PASSWORD----------------------------------------------
+                Password = ''.join(random.choices(string.digits, k=3))
+                Password = "Pwd_" + Password
+                driver.find_element_by_xpath("//input[@type='password']").send_keys(Password)
+                time.sleep(1)
+                #----------------------------------------------------------------------------------------------
+                # ------------------------------ENTERING FULL NAME----------------------------------------------
+                Full_Name = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+                Full_Name = "FName_" + Full_Name
+                driver.find_element_by_xpath("//input[@data-test-id='202205101241230881398']").send_keys(Full_Name)
+                time.sleep(1)
+                #-----------------------------------------------------------------------------------------------
+                # ---------------SELECTING ROLE------------------------------------------------------------
+                Role_DDL_Count = driver.find_elements_by_xpath("//select[@data-test-id='202205101241230881520']/option")
+                Role_Rand = random.randrange(1, len(Role_DDL_Count))
+                print("Role_Rand is : "+str(Role_Rand))
+                Role_DDL_Select = Select(driver.find_element_by_xpath("//select[@data-test-id='202205101241230881520']"))
+                Role_DDL_Select.select_by_index(Role_Rand)
+                time.sleep(5)
+                #------------------------------------------------------------------------------------------
+                # ----------------------------CLICKING ON SUBMIT BUTTON---------------------------
+                driver.find_element(By.XPATH, "//button[@title='Submit']").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                PageTitle1 = driver.find_element_by_xpath("//h2[@class='header-title']").text
+                if PageTitle1 == "Organisation Chart":
+                    TestResult.append(PageName+ " is working fine")
+                    TestResultStatus.append("Pass")
+                    sheet2.cell(7,1).value = User_ID
+                    wb2.save(loc2)
+            except Exception as errrr:
+                print(errrr)
+                TestResult.append(PageName+ " is not working")
                 TestResultStatus.append("Fail")
-                FoundFirstName="N/A"
 
-            try:
-                FoundLastName = driver.find_element_by_xpath("//table[@id='clients-list']/tbody/tr[1]/td[3]").text
-                print(FoundLastName)
-                TestResult.append("Last Name found- " + FoundLastName)
-                TestResultStatus.append("Pass")
-            except Exception:
-                print("No data found for Last Name")
-                TestResult.append("No data found for Last Name")
-                TestResultStatus.append("Fail")
-                FoundLastName="N/A"
-
-            try:
-                FoundNDIS = driver.find_element_by_xpath("//table[@id='clients-list']/tbody/tr[1]/td[4]").text
-                print(FoundNDIS)
-                TestResult.append("NDIS found- " + FoundNDIS)
-                TestResultStatus.append("Pass")
-            except Exception:
-                print("No data found for NDIS")
-                TestResult.append("No data found for NDIS")
-                TestResultStatus.append("Fail")
-                FoundNDIS="N/A"
-
-            try:
-                FoundMobileNumber = driver.find_element_by_xpath("//table[@id='clients-list']/tbody/tr[1]/td[5]").text
-                print(FoundMobileNumber)
-                TestResult.append("Mobile Number found- " + FoundMobileNumber)
-                TestResultStatus.append("Pass")
-            except Exception:
-                print("No data found for Mobile Number")
-                TestResult.append("No data found for Mobile Number")
-                TestResultStatus.append("Fail")
-                FoundMobileNumber="N/A"
-
-            try:
-                FoundEmail = driver.find_element_by_xpath("//table[@id='clients-list']/tbody/tr[1]/td[6]").text
-                print(FoundEmail)
-                TestResult.append("Email found- " + FoundEmail)
-                TestResultStatus.append("Pass")
-            except Exception:
-                print("No data found for Email")
-                TestResult.append("No data found for Email")
-                TestResultStatus.append("Fail")
-                FoundEmail="N/A"
-
-            # ------------------------Verify Data present at Dashboard page --------------
-            if FLNameXL!=FoundFirstName+" "+FoundLastName:
-                print("Client name at client portal does not match with client name at admin portal")
-                TestResult.append("Client name at client portal does not match with client name at admin portal")
-                TestResultStatus.append("Fail")
-            else:
-                print("Client name at client portal matched with client name at admin portal")
-                TestResult.append("Client name at client portal matched with client name at admin portal")
-                TestResultStatus.append("Pass")
-
-            if NDISXL!=FoundNDIS:
-                print("NDIS at client portal does not match with NDIS at admin portal")
-                TestResult.append("NDIS at client portal does not match with NDIS at admin portal")
-                TestResultStatus.append("Fail")
-            else:
-                print("NDIS at client portal matched with NDIS at admin portal")
-                TestResult.append("NDIS at client portal matched with NDIS at admin portal")
-                TestResultStatus.append("Pass")
-
-            if PhoneXL!=FoundMobileNumber:
-                print("Mobile Number at client portal does not match with Mobile Number at admin portal")
-                TestResult.append("Mobile Number at client portal does not match with Mobile Number at admin portal")
-                TestResultStatus.append("Fail")
-            else:
-                print("Mobile Number at client portal matched with Mobile Number at admin portal")
-                TestResult.append("Mobile Number at client portal matched with Mobile Number at admin portal")
-                TestResultStatus.append("Pass")
-
-            if EmailXL!=FoundEmail:
-                print("Email at client portal does not match with Email at admin portal")
-                TestResult.append("Email at client portal does not match with Email at admin portal")
-                TestResultStatus.append("Fail")
-            else:
-                print("Email at client portal matched with Email at admin portal")
-                TestResult.append("Email at client portal matched with Email at admin portal")
-                TestResultStatus.append("Pass")
-
-        except Exception as err:
-            print(err)
-            TestResult.append("Portal is not working correctly. Below error found\n"+str(err))
-            TestResultStatus.append("Fail")
+        except Exception:
             pass
+
 
     else:
         print()
@@ -419,7 +319,7 @@ def test_VerifyAllClickables(test_setup):
 
         # -----------To add Skipped test case details in PDF details sheet-------------
         ExcelFileName = "FileName"
-        loc = (path+'PDFFileNameData/' + ExcelFileName + '.xlsx')
+        loc = (path + 'PDFFileNameData/' + ExcelFileName + '.xlsx')
         wb = openpyxl.load_workbook(loc)
         sheet = wb.active
         check = TestName

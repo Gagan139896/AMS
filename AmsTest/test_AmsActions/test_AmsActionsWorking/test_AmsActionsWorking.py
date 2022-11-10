@@ -601,8 +601,6 @@ def test_VerifyAllClickables(test_setup):
 
             # ---------------------------Verify pagination clicks in Asset Table-----------------------------
             PageName = "Asset table Pagination"
-            WorkingAssetList = []
-            BrokenAssetsList = []
             try:
                 Page_Count2 = driver.find_element_by_xpath(
                     "//div[@class=' flex content layout-content-inline_grid_double  content-inline_grid_double ']/child::div[2]//label[@data-test-id='20141007100658002115508']").text
@@ -610,7 +608,6 @@ def test_VerifyAllClickables(test_setup):
                 print(Page_Count2)
                 print(NumOfClicks2)
 
-                counter1 = 0
                 Is_Yes = 0
                 Is_No = 0
                 for i1 in range(1,NumOfClicks2+1):
@@ -622,7 +619,6 @@ def test_VerifyAllClickables(test_setup):
                             pass
                         else:
                             try:
-                                #Asset_Text = driver.find_element_by_xpath("//table[@pl_prop_class='AMS-Data-Assets']/tbody/tr[" + str(ii1 + 2) + "]/td[1]//span").is_displayed()
                                 Asset_Status = driver.find_element_by_xpath("//table[@pl_prop_class='AMS-Data-Assets']/tbody/tr[" + str(ii1 + 2) + "]/td[3]//span").text
                                 time.sleep(0.5)
                                 if Asset_Status == "Yes":

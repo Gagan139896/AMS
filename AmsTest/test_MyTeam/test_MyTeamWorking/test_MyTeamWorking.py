@@ -211,6 +211,7 @@ def test_VerifyAllClickables(test_setup):
             try:
                 driver.find_element_by_xpath("//i[@class='icon-paragraph-justify3']/parent::a").click()
                 time.sleep(2)
+
                 driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[13]/a").click()
                 time.sleep(2)
 

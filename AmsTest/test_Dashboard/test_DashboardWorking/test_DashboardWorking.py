@@ -459,20 +459,22 @@ def test_VerifyAllClickables(test_setup):
                 print("Page_Count3 " + str(Page_Count3))
                 print("NumOfClicks3 " + str(NumOfClicks3))
 
+                counter = 0
                 # ----For loop to page clicks----
                 for i1 in range(1, NumOfClicks3):
                     Operators_List_Rows = driver.find_elements_by_xpath("//table[@data-test-id='201712290432230969267-layout']/tbody//table//tr/td[1]/div")
                     NumRows3 = int(len(Operators_List_Rows))
-                    print("NumRows3 "+str(NumRows3))
+                    print("----------------------------------------------------------------")
+                    print("Page No. " +str(i1)+ " and No. of records are "+str(NumRows3))
                     for ii1 in range(NumRows3):
                         time.sleep(0.25)
                         Is_Present = driver.find_element_by_xpath("//table[@data-test-id='201712290432230969267-layout']/tbody//table//tr[" + str(ii1 + 2) + "]/td[1]/div").is_displayed()
                         if Is_Present == True:
                             try:
                                 Bd_Id_Text = driver.find_element_by_xpath(
-                                    "//table[@data-test-id='201712290432230969267-layout']/tbody//table//tr[" + str(
-                                    ii1 + 2) + "]/td[1]/div").text
-                                print("Records on page no. "+ str(i1) + str(Bd_Id_Text))
+                                    "//table[@data-test-id='201712290432230969267-layout']/tbody//table//tr[" + str(ii1 + 2) + "]/td[1]/div").text
+                                counter = counter + 1
+                                print("Records on page no. "+ str(i1)+ " " + str(Bd_Id_Text))
                                 # print(sheet2.cell(7, 1).value)
                                 if Bd_Id_Text == sheet2.cell(11, 1).value:
                                     print("----------------------------------")
@@ -480,7 +482,9 @@ def test_VerifyAllClickables(test_setup):
                                         sheet2.cell(11, 1).value))
                                     print("Breakdown report table pagination is working")
                                     print("----------------------------------")
-                                    TestResult.append(PageName + " is working fine for " + str(NumOfClicks3) + " pages and Breakdown id is found in breakdown list")
+                                    TestResult.append(PageName + " is working fine for " + str(NumOfClicks3) + " pages and Number of records found in breakdown cases list are : " +str(counter))
+                                    TestResultStatus.append("Pass")
+                                    TestResult.append("'Breakdown id' generated during 'Breakdown Case' creation is verified in 'Breakdown cases list' on 'Dashboard page' ")
                                     TestResultStatus.append("Pass")
                             except Exception:
                                 pass

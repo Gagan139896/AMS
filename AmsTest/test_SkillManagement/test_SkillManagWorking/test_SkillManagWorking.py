@@ -1,7 +1,4 @@
-import datetime
-import glob
-import math
-import re
+import string
 import time
 import openpyxl
 from datetime import datetime,date
@@ -10,20 +7,12 @@ from fpdf import FPDF
 import pytest
 from selenium import webdriver
 import allure
-from selenium.webdriver import ActionChains
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from sys import platform
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import TimeoutException
-import pyperclip
 import random
-from pathlib import Path
 import os
-import ntpath
 import os.path
+
 
 
 @allure.step("Entering username ")
@@ -84,7 +73,7 @@ def test_setup():
           driver = webdriver.Chrome(
               executable_path="/home/legion/office 1wayit/AVER/AverTest1/chrome/chromedriverLinux1")
       elif platform == "win32" or platform == "win64":
-          driver = webdriver.Chrome(executable_path="/AmsTest/chrome/chromedriver.exe")
+          driver = webdriver.Chrome(executable_path="D:/AMS/AmsTest/chrome/chromedriver.exe")
 
       driver.implicitly_wait(10)
       driver.maximize_window()
@@ -204,26 +193,29 @@ def test_VerifyAllClickables(test_setup):
         TimeSpeed = 2
         SHORT_TIMEOUT = 3
         LONG_TIMEOUT = 60
-        LOADING_ELEMENT_XPATH = "//body[@class='sidebar-xs loader_overlay']"
-        try:
-            # ---------------------------Verify Resources icon click-----------------------------
-            PageName = "Resources icon"
-            Ptitle1 = ""
-            try:
-                driver.find_element_by_xpath("//i[@class='icon-paragraph-justify3']/parent::a").click()
-                time.sleep(2)
-                driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[12]/a").click()
-                time.sleep(2)
+        LOADING_ELEMENT_XPATH = "//div[@class='loader']"
+        loc2 = ("D:/AMS/AmsTest/test_AmsActions/test_AmsActionsWorking/DataRecord.xlsx")
+        wb2 = openpyxl.load_workbook(loc2)
+        sheet2 = wb2.active
 
+        try:
+            # ---------------------------Verify Skill Management icon click-----------------------------
+            PageName = "Skill Management icon"
+            Ptitle1 = "Skill Management"
+            try:
+                driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[6]/a").click()
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
-                time.sleep(2)
+                PageTitle1 = driver.find_element_by_xpath("//h1[text()='Skill Management']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present in left menu and able to click")
                 TestResult.append(PageName + " is present in left menu and able to click")
                 TestResultStatus.append("Pass")
+                driver.find_element_by_xpath("//input[@data-test-id='2015030515570700545405']").click()
             except Exception as ee:
                 print(ee)
                 TestResult.append(PageName + " is not present")
@@ -232,19 +224,18 @@ def test_VerifyAllClickables(test_setup):
             time.sleep(TimeSpeed)
             # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify working of Back button on Resources page -----------------------------
-            PageName = "Back button"
-            Ptitle1 = "Rae"
+            # ---------------------------Verify '+ Add Skill' button click -----------------------------
+            PageName = "'+ Add Skill' button"
+            Ptitle1 = "        Add Skill       "
             try:
-                driver.find_element_by_xpath("//a[text()='Back']").click()
+                driver.find_element_by_xpath("//button[@data-test-id='20160721092326035219972']").click()
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
-                time.sleep(2)
-                PageTitle1 = driver.find_element_by_xpath("//div[@class='hed_wth_srch']/h2").text
+                PageTitle1 = driver.find_element_by_xpath("//span[@id = 'modaldialog_hd_title']").text
                 print(PageTitle1)
                 assert PageTitle1 in Ptitle1, PageName + " not present"
                 TestResult.append(PageName + " is clickable")
@@ -256,185 +247,172 @@ def test_VerifyAllClickables(test_setup):
             time.sleep(TimeSpeed)
             # ---------------------------------------------------------------------------------
 
-            # ----------------Verify Resources icon click after verifying back--------
-            PageName = "Resources icon"
+            # ----------------Adding skill-----------------
+            PageName = "Skill adding process"
             Ptitle1 = ""
             try:
-                driver.find_element_by_xpath("//i[@class='icon-paragraph-justify3']/parent::a").click()
-                time.sleep(2)
-                driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[12]/a").click()
-                time.sleep(2)
+                #------------Selecting operator from Operator DDL---------------
+                try:
+                    Opertor_DDL_Count = driver.find_elements_by_xpath("//select[@data-test-id='202205310612020059753']/option")
+                    Operator_Rand = random.randrange(1, len(Opertor_DDL_Count))
+                    print(Operator_Rand)
+                    Operator_DDL = Select(driver.find_element_by_xpath("//select[@data-test-id='202205310612020059753']"))
+                    Operator_DDL.select_by_index(Operator_Rand)
+                    time.sleep(2)
+                    TestResult.append("Operator is selected from opertor DDL")
+                    TestResultStatus.append("Pass")
+                except Exception:
+                    TestResult.append("Operator is not selected from opertor DDL")
+                    TestResultStatus.append("Fail")
+                #-----------Entering skill------------------------------
+                for aa in range(5):
+                    letters = string.ascii_lowercase
+                    returna = ''.join(random.choice(letters) for i in range(5))
+                    FName = returna
+                print(FName)
+                LName = "_Skill"
+                Skill_Name = FName + LName
+                print(Skill_Name)
 
+                try:
+                    driver.find_element_by_xpath("//Label[@data-test-id='202205310612020060475-Label']").send_keys(Skill_Name)
+                    time.sleep(2)
+                    TestResult.append("Skill is entered successfully")
+                    TestResultStatus.append("Pass")
+                except Exception:
+                    TestResult.append("Not able to enter input in skill field")
+                    TestResultStatus.append("Fail")
+                #-------------Selecting Rating from DDL------------------------
+                try:
+                    Rating_DDL_Count = driver.find_elements_by_xpath("//select[@data-test-id='202208311501430532636']/option")
+                    Rating_Rand = random.randrange(1, len(Rating_DDL_Count))
+                    print(Rating_Rand)
+                    Rating_DDL = Select(driver.find_element_by_xpath("//select[@data-test-id='202208311501430532636']"))
+                    Rating_DDL.select_by_index(Rating_Rand)
+                    time.sleep(2)
+                    TestResult.append("Rating is selected from opertor DDL")
+                    TestResultStatus.append("Pass")
+                except Exception:
+                    TestResult.append("Rating is not selected from opertor DDL")
+                    TestResultStatus.append("Fail")
+                driver.find_element_by_xpath("// button[ @ id = 'ModalButtonSubmit']").click()
+                TestResult.append("Submit button is clicked successfully")
+                TestResultStatus.append("Pass")
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
-                TestResult.append(PageName + "  is opened again after verifying back button")
-                TestResultStatus.append("Pass")
+                try:
+                    Error_Message = driver.find_element_by_xpath("//span[@id='ERRORMESSAGES_ALL']").is_displayed()
+                    Error_Text = driver.find_element_by_xpath("//span[@id='ERRORMESSAGES_ALL']/ul/li[1]").text
+                    if Error_Message == True:
+                        driver.find_element_by_xpath("// button[ @ id = 'ModalButtonCancel']").click()
+                        TestResult.append("Not able to add skill due to below  error \n"+str(Error_Text))
+                        TestResultStatus.append("Fail")
+                    else:
+                        Page_Title = driver.find_element_by_xpath("//h1[@class='header-title']").is_displayed()
+                        if Page_Title == True:
+                            sheet2.cell(15, 1).value = Skill_Name
+                            TestResult.append(PageName + "  is working fine")
+                            TestResultStatus.append("Pass")
+                            wb2.save(loc2)
+                except Exception:
+                    pass
             except Exception:
-                TestResult.append(PageName + " is not opened again after verifying back button")
+                TestResult.append(PageName + " is not working fine")
                 TestResultStatus.append("Fail")
             print()
             time.sleep(TimeSpeed)
-            for load in range(LONG_TIMEOUT):
-                try:
-                    if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                        time.sleep(0.5)
-                except Exception:
-                    break
+
             # ---------------------------------------------------------------------------------
 
-            # ----------------Uploading attachment in resources section------------------------
-            FileName = "nature"
-            locx1 = (path + 'FileToUpload/' + FileName + '.jpg')
-            PageName = "Add New button"
-            DocumentName = "Test Document"
+            # -----------------Verifying filters for skill table records------------------------
             try:
-                #-----------Clicking on add new button-------------------------------------
-                driver.find_element_by_xpath("//a[text()='Add New']").click()
-                TestResult.append(PageName + " clicked successfully")
-                TestResultStatus.append("Pass")
-                time.sleep(1)
-                # -----------Entering document name-----------------------------------------
-                driver.find_element_by_xpath("//input[@name='name']").send_keys(DocumentName)
-                time.sleep(1)
-                TestResult.append("Document name entered successfully")
-                TestResultStatus.append("Pass")
-                # -----------Uploading document--------------------------------------------
-                driver.find_element_by_xpath("//input[@name='attachment']").send_keys(locx1)
-                time.sleep(1)
-                TestResult.append("Document uploaded successfully")
-                TestResultStatus.append("Pass")
-                time.sleep(1)
-                # -----------Clicking on save button---------------------------------------
-                driver.find_element_by_xpath("//button[text()='Save']").click()
-                TestResult.append("Save button is clicked successfully")
-                TestResultStatus.append("Pass")
-                for load in range(LONG_TIMEOUT):
-                    try:
-                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                            time.sleep(0.5)
-                    except Exception:
-                        break
-                # -----------Applying search filter to search the uploaded document in application-----------------------
-                try:
-                    driver.find_element_by_xpath("//input[@placeholder='Type to filter...']").send_keys(
-                        DocumentName)
-                    time.sleep(1)
-                    TestResult.append("Searching uploaded document in resource attachments listing table")
+                #----Checking skill name in reffrence excel sheet------
+                if sheet2.cell(15,1).value == None:
+                    print("Skill name is not present is in reffrence excel sheet. Need to add skill first")
+                    TestResult.append("Skill name is not present is in reffrence excel sheet. Need to add skill first")
                     TestResultStatus.append("Pass")
-
-                    # ---------Downloading uploaded document----------------------------------
-                    driver.find_element_by_xpath("//table[@id='table_documents']/tbody/tr[1]/td[4]/a[1]").click()
-                    time.sleep(1)
+                else:
+                    #-----Clicking on Skill filter------------
+                    driver.find_element_by_xpath("//th[@data-test-id='202208021538000758244']//a").click()
+                    #-----Code for loader--------
                     for load in range(LONG_TIMEOUT):
                         try:
                             if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                                 time.sleep(0.5)
                         except Exception:
                             break
-                except Exception:
-                    pass
-                driver.refresh()
-                # --------------Finding latest downloaded file in downloads folder-------------------------------------
-                TestResult.append("Searching downloaded file in downloads folder")
-                TestResultStatus.append("Pass")
-                time.sleep(3)
-                folder_path = str(Path.home() / "Downloads")
-                file_type = r'\*'
-                files = glob.glob(folder_path + file_type)
-                max_file = max(files, key=os.path.getctime)
-
-                print(max_file)
-                filename = ntpath.basename("'r'" + str(max_file))
-                print(filename)
-                TestResult.append(
-                    "Downloaded file is found in downloads folder. The file name is : \n" + str(filename))
-                TestResultStatus.append("Pass")
-
-                # --------------Verifying pagination clicks for Resources table-------------------------------------
-                RecordsPerPage = 50
-                TotalItem = driver.find_element_by_xpath("//div[@id='table_documents_info']").text
-                print(TotalItem)
-
-                substr = "of"
-                x = TotalItem.split(substr)
-                string_name = x[0]
-                TotalItemAfterOf = x[1]
-                abc = ""
-                countspace = 0
-                for element in range(0, len(string_name)):
-                    if string_name[(len(string_name) - 1) - element] == " ":
-                        countspace = countspace + 1
-                        if countspace == 2:
-                            break
-                    else:
-                        abc = abc + string_name[(len(string_name) - 1) - element]
-                abc = abc[::-1]
-                TotalItemBeforeOf = abc
-                TotalItemAfterOf = TotalItemAfterOf.split(" ")
-                TotalItemAfterOf = TotalItemAfterOf[1]
-                TotalItemAfterOf = re.sub('[^A-Za-z0-9]+', '', TotalItemAfterOf)
-
-                TotalItemAfterOf = int(TotalItemAfterOf)
-                TotalPages = TotalItemAfterOf / RecordsPerPage
-                NumberOfPages = math.ceil(float(TotalPages))
-                print(TotalItemAfterOf)
-                print(NumberOfPages)
-                print("RecordsPerPage is " + str(RecordsPerPage))
-
-                for i in range(NumberOfPages):
-                    if i == NumberOfPages - 1:
-                        TestResult.append(
-                            "Pagination for [ " + str(TotalItemAfterOf) + " ] no. of records is successfully verified")
-                        TestResultStatus.append("Pass")
-                        break
-                    ItemLength = driver.find_elements_by_xpath("//table[@id='table_documents']/tbody/tr")
-                    ItemLength = len(ItemLength)
-                    print(ItemLength)
-                    for ii in range(ItemLength):
-                        Text1 = driver.find_element_by_xpath(
-                            "//table[@id='table_documents']/tbody/tr[" + str(ii + 1) + "]/td[3]").text
-                        if Text1 == filename:
-                            print(
-                                "Downloaded file is found in resources attachments listing table of application and verified successfully")
-                            TestResult.append(
-                                "Downloaded file is found in resources attachments listing table application and verified successfully")
-                            TestResultStatus.append("Pass")
-                            driver.find_element_by_xpath(
-                                "//table[@id='table_documents']/tbody/tr[1]/td[4]/a[2]").click()
-                            os.remove(max_file)
-                            break
-                        else:
-                            print("Downloaded file is not found in resources attachments listing table of application")
-                            TestResult.append(
-                                "Downloaded file is not found in resources attachments listing table of application")
-                            TestResultStatus.append("Fail")
-                        time.sleep(0.5)
-
-                    driver.find_element_by_xpath(
-                        "//div[@class='dataTables_paginate paging_simple_numbers']/a[2]").click()
+                    #-------Entering name in search field inside filter------------
+                    driver.find_element_by_xpath("//input[@data-test-id='201411181100280377101613']").send_keys(sheet2.cell(15,1).value)
+                    #------Clicking on apply button inside filter----------
+                    driver.find_element_by_xpath("//ul[@class='pz-po-c-ul']/li[last()]/div/button[1]").click()
                     time.sleep(2)
-                if i != NumberOfPages - 1:
-                    TestResult.append(
-                        "Pagination for [ " + str(TotalItemAfterOf) + " ] no. of records is not working correctly")
-                    TestResultStatus.append("Fail")
-
-                # ---------------------------------------------------------------------------------
-            except Exception as ee:
-                print(ee)
-                TestResult.append("Add new document process is not working due to below error : \n"+str(ee))
-                TestResultStatus.append("Fail")
-                time.sleep(2)
-
-            # ---------------------------------------------------------------------------------
+                    #-------Getting text of filtered record----------
+                    try:
+                        Skill_Text = driver.find_element_by_xpath("//table[@pl_prop_class='Data-SkillManagement']/tbody/tr[2]/td[3]//span").text
+                        if Skill_Text == sheet2.cell(15,1).value:
+                            #----Clicking on delete button----------
+                            driver.find_element_by_xpath("//button[@data-test-id='202208031200580364252']/i").click()
+                            #------Clicking on submit button to verify record deletion----------
+                            driver.find_element_by_xpath("//button[@id='ModalButtonSubmit']").click()
+                            # -----Code for loader-----------
+                            for load in range(LONG_TIMEOUT):
+                                try:
+                                    if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                                        time.sleep(0.5)
+                                except Exception:
+                                    break
+                            # -----Clicking on Skill filter after deleting skill record------------
+                            driver.find_element_by_xpath("//th[@data-test-id='202208021538000758244']//a").click()
+                            # -----Code for loader-----------
+                            for load in range(LONG_TIMEOUT):
+                                try:
+                                    if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                                        time.sleep(0.5)
+                                except Exception:
+                                    break
+                            #-------Entering name in search field inside filter after deleting record------------
+                            driver.find_element_by_xpath("//input[@data-test-id='201411181100280377101613']").send_keys(sheet2.cell(15, 1).value)
+                            # ------Clicking on apply button inside filter after deleting record----------
+                            driver.find_element_by_xpath("//ul[@class='pz-po-c-ul']/li[last()]/div/button[1]").click()
+                            time.sleep(2)
+                            try:
+                                Skill_Text = driver.find_element_by_xpath("//table[@pl_prop_class='Data-SkillManagement']/tbody/tr[2]/td[3]//span").text
+                                if Skill_Text != sheet2.cell(15, 1).value:
+                                    for load in range(LONG_TIMEOUT):
+                                        try:
+                                            if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                                                time.sleep(0.5)
+                                        except Exception:
+                                            break
+                                    TestResult.append("Skill record is deleted successfully")
+                                    TestResultStatus.append("Pass")
+                                elif Skill_Text == sheet2.cell(15, 1).value:
+                                    TestResult.append("Skill record deletion process is not working")
+                                    TestResultStatus.append("Pass")
+                            except Exception:
+                                No_Record = driver.find_element_by_xpath("//table[@pl_prop_class='Data-SkillManagement']/tbody/tr[2]/td[1]//span").text
+                                TestResult.append("The result after deleting the record and again applying filter is : " + str(No_Record))
+                                sheet2.cell(15,1).value = None
+                                wb2.save(loc2)
+                        elif Skill_Text != sheet2.cell(15,1).value :
+                            TestResult.append("Skill is not found in records after applying filter")
+                            TestResultStatus.append("Fail")
+                    except Exception as rrr:
+                        No_Record1 = driver.find_element_by_xpath("//table[@pl_prop_class='Data-SkillManagement']/tbody/tr[2]/td[1]//span").text
+                        TestResult.append("The result after applying filter is : "+str(No_Record1))
+                        TestResultStatus.append("Fail")
+                        print(rrr)
+            except Exception:
+                print()
 
         #---------------------------------------------------------------------------------------
         except Exception as err:
             print(err)
-            TestResult.append("Resources is not working correctly. Below error found\n"+str(err))
+            TestResult.append("Skill management page is not working correctly. Below error found\n"+str(err))
             TestResultStatus.append("Fail")
             pass
 

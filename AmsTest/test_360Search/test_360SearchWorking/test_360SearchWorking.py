@@ -203,45 +203,142 @@ def test_VerifyAllClickables(test_setup):
         TimeSpeed = 2
         SHORT_TIMEOUT = 3
         LONG_TIMEOUT = 60
-        LOADING_ELEMENT_XPATH = "//div[@class='main-loader LoaderImageLogo']"
+        LOADING_ELEMENT_XPATH = "//div[@class='loader']"
         loc2 = ("D:/AMS/AmsTest/test_AmsActions/test_AmsActionsWorking/DataRecord.xlsx")
         wb2 = openpyxl.load_workbook(loc2)
         sheet2 = wb2.active
-
-        #-------360 Search icon click------------------------
         try:
-            print()
-            driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[1]/a").click()
-            time.sleep(2)
-            driver.find_element_by_xpath("//div[@data-layout-id='202209150520030801']").click()
-        except Exception as err:
-            print(err)
+            #-------360 Search icon click------------------------
+            PageName = "360 Search icon"
+            Ptitle1 = "GO FOR 360° SEARCH"
+            try:
+                driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[1]/a").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                driver.find_element_by_xpath("//div[@data-layout-id='202209150520030801']").click()
+                PageTitle1 = driver.find_element_by_xpath("//div[@data-test-id='202205040525180362469']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present in left menu and able to click")
+                TestResult.append(PageName + " is present in left menu and able to click")
+                TestResultStatus.append("Pass")
+            except Exception:
+                print(PageName + " is not clickable")
+                TestResult.append(PageName + " is not clickable")
+                TestResultStatus.append("Fail")
+            #--------------------------------------------------------------------------------------------
 
-        #--------------
-        try:
-            AssetType = driver.find_element_by_xpath("//input[@data-test-id='202204250843470340998']")
-            AssetType.send_keys(sheet2.cell(3, 1).value)
-            AssetType.send_keys(Keys.DOWN)
-            AssetType.send_keys(Keys.ENTER)
-            time.sleep(5)
-            driver.find_element_by_xpath("//button[@data-test-id='202206091157570013179']").click()
-        except Exception as asss:
-            print(asss)
+            #----------------Searching asset type---------------------------------------------
+            PageName = "360 search for Asset type"
+            try:
+                #--------Entering asset type------------
+                AssetType = driver.find_element_by_xpath("//input[@data-test-id='202204250843470340998']")
+                AssetType.send_keys(sheet2.cell(3, 1).value)
+                AssetType.send_keys(Keys.DOWN)
+                AssetType.send_keys(Keys.ENTER)
+                time.sleep(5)
+                #---------Clicking on Search button------------
+                driver.find_element_by_xpath("//button[@data-test-id='202206091157570013179']").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                #-----Clicking on Asset type tab-----------
+                driver.find_element_by_xpath("//h3[text()='Asset Type']").click()
+                time.sleep(2)
+                try:
+                    #-------Getting text of Filtered Asset type---------
+                    Asset_Type_Text = driver.find_element_by_xpath("//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='2']/div[2]//tbody/tr[2]/td[2]/span").text
+                    if sheet2.cell(3, 1).value == Asset_Type_Text:
+                        print(PageName + " is working fine")
+                        TestResult.append(PageName + " is working fine")
+                        TestResultStatus.append("Pass")
+                except Exception:
+                    #--------Getting text when no asset type record found after applying filter-----------
+                    No_Results = driver.find_element_by_xpath("//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='2']/div[2]//tbody/tr[2]/td[1]").is_displayed()
+                    if No_Results == True:
+                        print(PageName + " is not working fine. Because asset type not found in grid after applying search")
+                        TestResult.append(PageName + " is not working fine. Because asset type not found in grid after applying search")
+                        TestResultStatus.append("Fail")
+                driver.find_element_by_xpath("//button[@data-test-id='202206091157570014628']").click()
+                try:
+                   Is_True = AssetType.get_attribute('value')
+                   if Is_True == sheet2.cell(3, 1).value:
+                       print("Clear button is not working fine for Asset type search")
+                       TestResult.append("Clear button is not working fine for Asset type search")
+                       TestResultStatus.append("Fail")
+                except Exception:
+                    print("Clear button is working fine for Asset type search")
+                    TestResult.append("Clear button is working fine for Asset type search")
+                    TestResultStatus.append("Pass")
+            except Exception as err:
+                print("Asset type search not is working fine. Below error found : "+str(err))
+                TestResult.append("Asset type search not is working fine. Below error found : "+str(err))
+                TestResultStatus.append("Fail")
+            #---------------------------------------------------------------------------------------
 
-        #--------------
-        try:
-            driver.find_element_by_xpath("//div[@data-layout-id='202209150520030801']").click()
-        except Exception as srch:
-            print(srch)
+            # ----------------Searching Asset---------------------------------------------
+            PageName = "360 search for Asset"
+            try:
+                # --------Entering Asset------------
+                Asset = driver.find_element_by_xpath("//input[@data-test-id='202204250843470341228']")
+                Asset.send_keys(sheet2.cell(3, 2).value)
+                Asset.send_keys(Keys.DOWN)
+                Asset.send_keys(Keys.ENTER)
+                time.sleep(5)
+                # ---------Clicking on Search button------------
+                driver.find_element_by_xpath("//button[@data-test-id='202206091157570013179']").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                # -----Clicking on Asset tab-----------
+                driver.find_element_by_xpath("//h3[text()='Assets']").click()
+                time.sleep(2)
+                try:
+                    #----------Getting text of filtered asset---------------
+                    Asset_Text = driver.find_element_by_xpath(
+                        "//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='3']/div[2]//tbody/tr[2]/td[2]").text
+                    if sheet2.cell(3, 1).value == Asset_Text:
+                        print(PageName + " is working fine for asset type")
+                        TestResult.append(PageName + " is working fine for asset type")
+                        TestResultStatus.append("Pass")
+                except Exception:
+                    #-------------Getting text when No Asset Record found after applying filter-----------
+                    No_Results = driver.find_element_by_xpath(
+                        "//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='3']/div[2]//tbody/tr[2]/td[1]").is_displayed()
+                    if No_Results == True:
+                        print(PageName + " is not working fine for asset type. Because asset type not found in grid after applying search")
+                        TestResult.append(PageName + " is not working fine for asset type. Because asset type not found in grid after applying search")
+                        TestResultStatus.append("Fail")
+                driver.find_element_by_xpath("//button[@data-test-id='202206091157570014628']").click()
+                try:
+                   Is_True = Asset.get_attribute('value')
+                   if Is_True == sheet2.cell(3, 2).value:
+                       print("Clear button is not working fine for Asset search")
+                       TestResult.append("Clear button is not working fine for Asset search")
+                       TestResultStatus.append("Fail")
+                except Exception:
+                    print("Clear button is working fine for Asset search")
+                    TestResult.append("Clear button is working fine for Asset search")
+                    TestResultStatus.append("Pass")
+            except Exception as err:
+                print("Asset search is not working fine. Below error found : " + str(err))
+                TestResult.append("Asset search not is working fine. Below error found : " + str(err))
+                TestResultStatus.append("Fail")
+            # ---------------------------------------------------------------------------------------
 
-        # -------------
-        try:
-            Asset_Text_360 = driver.find_element_by_xpath("//div[@section_index='259']//tbody/tr[2]/td[2]/span").text
-            if sheet2.cell(3, 1).value == Asset_Text_360:
-                print("360 search is working fine for asset type")
-        except Exception as srch:
-            print(srch)
-
+        except Exception as rrr:
+            print("360 search  is not working fine. Below error found : " + str(rrr))
+            TestResult.append("360 search not is working fine. Below error found : " + str(rrr))
+            TestResultStatus.append("Fail")
     else:
         print()
         print("Test Case skipped as per the Execution sheet")
