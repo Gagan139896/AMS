@@ -1,5 +1,6 @@
 import datetime
 import math
+import random
 import re
 import string
 import time
@@ -194,7 +195,8 @@ def test_VerifyAllClickables(test_setup):
         TimeSpeed = 2
         SHORT_TIMEOUT = 3
         LONG_TIMEOUT = 60
-        LOADING_ELEMENT_XPATH = "//body[@class='sidebar-xs loader_overlay']"
+        LOADING_ELEMENT_XPATH = "//div[@class='loader']"
+
         try:
             # --------------------------------Transfer assignment icon click----------------------------------------------
             PageName = "Transfer assignment icon"
@@ -217,174 +219,113 @@ def test_VerifyAllClickables(test_setup):
                 print(PageName + " is not clickable")
                 TestResult.append(PageName + " is not clickable")
                 TestResultStatus.append("Fail")
-            time.sleep(3)
             # ----------------------------------------------------------------------------------------------------------
 
-            # ---------------------------Verify working of Additional Contact Types button under system settings-----------------------------
-            PageName = "Additional Contact Types button"
-            ExpectedDict = {}
-            SuccessList = []
-            PendingList = []
+            # -------------Selecting Operator from DDL--------------------------------------------
             try:
-                try:
-                    driver.find_element_by_xpath("//a[text()='Additional Contact Types']").click()
-                    TestResult.append(PageName + " is clickable on settings page")
-                    TestResultStatus.append("Pass")
-                    for load in range(LONG_TIMEOUT):
-                        try:
-                            if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                                time.sleep(0.5)
-                        except Exception:
-                            break
-                    Rows = driver.find_elements_by_xpath("//table[@id='client_status_data']/tbody/tr")
-                    Rows = len(Rows)
-                    print(Rows)
-                    TestResult.append(
-                        "Number of records found on Additional Contact Types settings section is: " + str(Rows))
-                    TestResultStatus.append("Pass")
-                    for tr in range (Rows):
-                        Keys1 = driver.find_element_by_xpath("//table[@id='client_status_data']/tbody/tr["+str(tr+1)+"]/td[3]").text
-                        print(Keys1)
-                        time.sleep(0.25)
-                        Values = driver.find_element_by_xpath("//table[@id='client_status_data']/tbody/tr["+str(tr+1)+"]/td[2]").text
-                        print(Values)
-                        time.sleep(0.25)
-                        if Keys1 == "Success":
-                            SuccessList.append(Values)
-                            ExpectedDict[Keys1] = SuccessList
-                        elif Keys1 == "Pending":
-                            PendingList.append(Values)
-                            ExpectedDict[Keys1] = PendingList
-
-                    TestResult.append(
-                        "Below items found for success status : \n" + str(SuccessList))
-                    TestResultStatus.append("Pass")
-                    TestResult.append(
-                        "Below items found for pending status : \n" + str(PendingList))
-                    TestResultStatus.append("Pass")
-                except Exception:
-                    pass
-
-                try:
-                    driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[3]/a/i").click()
-                    TestResult.append("Client listing icon is clicked")
-                    TestResultStatus.append("Pass")
-                    for load in range(LONG_TIMEOUT):
-                        try:
-                            if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                                time.sleep(0.5)
-                        except Exception:
-                            break
-                except Exception:
-                    pass
-
-                #------------------Fetch Client name from Excel--------------------
-
-                #------------------------------------------------------------------
-
-                NameToOpen = "BitsInGlass1"
-                driver.find_element_by_xpath("//input[@id='searchFilter']").send_keys(NameToOpen)
-
-                ActionChains(driver).key_down(Keys.ENTER).key_up(Keys.ENTER).perform()
-                TestResult.append(
-                    "Searching client in application")
-                TestResultStatus.append("Pass")
+                Operator_DDL_Count = driver.find_elements_by_xpath("//div[@data-test-id='202207141255050652255']//select/option")
+                Operator_Rand = random.randrange(1, len(Operator_DDL_Count))
+                print("Operator_Rand "+str(Operator_Rand))
+                Operator_DDL = Select(driver.find_element_by_xpath("//div[@data-test-id='202207141255050652255']//select"))
+                Operator_DDL.select_by_index(Operator_Rand)
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
-                driver.find_element_by_xpath("//table[@id='table_data']/tbody/tr[1]/td[text()='"+NameToOpen+"']/a").click()
-                for load in range(LONG_TIMEOUT):
-                    try:
-                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                            time.sleep(0.5)
-                    except Exception:
-                        break
-                TestResult.append(
-                    "Clicking on client name to navigate client details page")
+                TestResult.append("Operator is selected from opertor DDL")
                 TestResultStatus.append("Pass")
-
-                #---------Checking Additional Contacts section in Client------------------
-                driver.find_element_by_xpath("//a[text()='Additional Contacts']").click()
-                for load in range(LONG_TIMEOUT):
-                    try:
-                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                            time.sleep(0.5)
-                    except Exception:
-                        break
-                TestResult.append(
-                    "Additional Contacts section is clicked on client details page")
-                TestResultStatus.append("Pass")
-
-                #-------------Clicking on Create New button---------------------
-                driver.find_element_by_xpath("//a[text()='Create New']").click()
-                for load in range(LONG_TIMEOUT):
-                    try:
-                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-                            time.sleep(0.5)
-                    except Exception:
-                        break
-                TestResult.append(
-                    "Clicking on Create New button")
-                TestResultStatus.append("Pass")
-
-                #------Fetching dropdown values---------------
-                ActSuccessElements=[]
-                l = driver.find_element_by_name("relationship")
-                d = Select(l)
-                for opt in d.options:
-                    print(opt.text)
-                    if opt.text !="Select Relationship":
-                        ActSuccessElements.append(opt.text)
-
-                #------Comparing results-----------
-                print(len(ExpectedDict["Success"]))
-                print(len(ActSuccessElements))
-                TestResult.append(
-                    "Comparing number of items found on Additional Contacts type settings section and Relationship to client dropdown")
-                TestResultStatus.append("Pass")
-
-                if len(ActSuccessElements)==len(ExpectedDict["Success"]):
-                    print("Items number matched")
-                    TestResult.append(
-                        "Items number matched")
-                    TestResultStatus.append("Pass")
-                else:
-                    print("Items number does not match")
-                    TestResult.append(
-                        "Items number does not match")
-                    TestResultStatus.append("Fail")
-
-
-                print(ExpectedDict["Success"])
-                print(ActSuccessElements)
-                TestResult.append(
-                    "Comparing list of items found on Additional Contacts type settings section and Relationship to client dropdown")
-                TestResultStatus.append("Pass")
-
-                if ActSuccessElements==ExpectedDict["Success"]:
-                    print("Items list matched")
-                    TestResult.append("Items list matched")
-                    TestResultStatus.append("Pass")
-                else:
-                    print("Items list does not match")
-                    TestResult.append(
-                        "Items list does not match")
-                    TestResultStatus.append("Fail")
-
-            except Exception as wr:
-                print(wr)
-                TestResult.append("Additional contacts types settings section is not working correctly")
+            except Exception:
+                TestResult.append("Operator is not selected from opertor DDL")
                 TestResultStatus.append("Fail")
-            # ---------------------------------------------------------------------------------
+                #---------------------------------------------------------------------------------
+
+            # --------------------------------Transfer assignment process----------------------------------------------
+            PageName = "Transfer assignment process"
+            try:
+                #--------Checking whether Operator worklist is expanded or not----------------------
+                Operator_Worklist = driver.find_element_by_xpath("//div[@class='dl-accordion-btn']")
+                Operator_Worklist1 = Operator_Worklist.get_attribute('aria-expanded')
+                if Operator_Worklist1 == "true":
+                    print("Operator_Worklist is : " +str(Operator_Worklist1))
+                elif Operator_Worklist1 == "false":
+                    print("Operator_Worklist is : " + str(Operator_Worklist1))
+                    Operator_Worklist.click()
+                try:
+                    #-----------Clicking on select checkbox in grid-------------
+                    Select_Checkbox = driver.find_element_by_xpath("//input[@data-test-id='2016072109335505834280']")
+                    Select_Checkbox1 = Select_Checkbox.is_enabled()
+                    print("Select_Checkbox1 " +str(Select_Checkbox1))
+                    if Select_Checkbox1 == True:
+                        print("11111")
+                        Select_Checkbox.click()
+                        time.sleep(1)
+
+                        #------------Getting "Transfer To" radio buttons count-----------------------
+                        Transfer_To_Count = driver.find_elements_by_xpath("//div[@data-test-id='202207141356190159493']/div/span/input")
+                        Transfer_To_Rand = random.randrange(1, len(Transfer_To_Count)+1)
+                        print(Transfer_To_Rand)
+                        driver.find_element_by_xpath("//div[@data-test-id='202207141356190159493']/div["+str(Transfer_To_Rand)+"]/span/input").click()
+
+                        #--------------Selecting value from User DDL-----------
+                        if Transfer_To_Rand == 1:
+                            print("Transfer_To_Rand "+str(Transfer_To_Rand))
+                            User_DDL_Count = driver.find_elements_by_xpath("//div[@data-test-id='202207130209200655486']/div[2]//select/option")
+                            User_DDL_Rand = random.randrange(1, len(User_DDL_Count)+1)
+                            print(User_DDL_Rand)
+                            User_DDL = Select(driver.find_element_by_xpath("//div[@data-test-id='202207130209200655486']/div[2]//select"))
+                            User_DDL.select_by_index(User_DDL_Rand)
+                            TestResult.append("User is selected from user DDL")
+                            TestResultStatus.append("Pass")
+
+                        #-----------------Selecting value from Work Basket DDL-------------
+                        else:
+                            print("Transfer_To_Rand " + str(Transfer_To_Rand))
+                            Work_Basket_Count = driver.find_elements_by_xpath("//select[@data-test-id='20220826151510017318']/option")
+                            Work_Basket_Rand = random.randrange(1, len(Work_Basket_Count) + 1)
+                            print(Work_Basket_Rand)
+                            Work_Basket_DDL = Select(driver.find_element_by_xpath("//select[@data-test-id='20220826151510017318']"))
+                            Work_Basket_DDL.select_by_index(Work_Basket_Rand)
+                            TestResult.append("Work basket is selected from work basket DDL")
+                            TestResultStatus.append("Pass")
+                        driver.find_element_by_xpath("//button[@data-test-id='202207130209200657887']").click()
+                        TestResult.append("Transfer button is clicked successfully")
+                        TestResultStatus.append("Pass")
+                        driver.refresh()
+                        for load in range(LONG_TIMEOUT):
+                            try:
+                                if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                                    time.sleep(0.5)
+                            except Exception:
+                                break
+                        Progess_Msg = driver.find_element_by_xpath("//div[@data-test-id='202207181436320243932']")
+                        Progess_Msg1 = Progess_Msg.is_displayed()
+                        Progess_Msg2 = Progess_Msg.text
+                        if Progess_Msg1 == True:
+                            print("After clicking on transfer button. Below message is displayed : \n"+Progess_Msg2)
+                            TestResult.append("After clicking on transfer button. Below message is displayed : \n"+Progess_Msg2)
+                            TestResultStatus.append("Pass")
+                except Exception:
+                    try:
+                        No_Work_Asgn = driver.find_element_by_xpath("//tr[@id='Grid_NoResults']//span").text
+                        print("No_Work_Asgn "+str(No_Work_Asgn))
+                        if No_Work_Asgn == "No work assigned":
+                            TestResult.append("'" + No_Work_Asgn + "' : " "text found when there is no work assignment present in grid for selected operator")
+                            TestResultStatus.append("Pass")
+                    except Exception:
+                        print("333333")
+            except Exception:
+                print(PageName + " is not clickable")
+                TestResult.append(PageName + " is not clickable")
+                TestResultStatus.append("Fail")
+            # ----------------------------------------------------------------------------------------------------------
 
             # ---------------------------------------------------------------------------------
 
         except Exception as err:
             print(err)
-            TestResult.append("Settings is not working correctly. Below error found\n"+str(err))
+            TestResult.append("Transfer assignment page is not working correctly. Below error found\n"+str(err))
             TestResultStatus.append("Fail")
             pass
 
