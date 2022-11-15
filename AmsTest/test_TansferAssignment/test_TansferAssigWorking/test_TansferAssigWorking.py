@@ -35,13 +35,13 @@ def test_setup():
   global TestDirectoryName
   global path
 
-  TestName = "test_TransferAssignment"
+  TestName = "test_TansferAssigWorking"
   description = "This test scenario is to verify working of Transfer Assignment page"
   TestResult = []
   TestResultStatus = []
   TestFailStatus = []
   FailStatus="Pass"
-  TestDirectoryName = "test_CreateBreakdownWorking"
+  TestDirectoryName = "test_TansferAssigWorking"
   global Exe
   Exe="Yes"
   Directory = 'test_TansferAssignment/'
@@ -74,7 +74,7 @@ def test_setup():
           driver = webdriver.Chrome(
               executable_path="/home/legion/office 1wayit/AVER/AverTest1/chrome/chromedriverLinux1")
       elif platform == "win32" or platform == "win64":
-          driver = webdriver.Chrome(executable_path="/AmsTest/chrome/chromedriver.exe")
+          driver = webdriver.Chrome(executable_path="D:/AMS/AmsTest/chrome/chromedriver.exe")
 
       driver.implicitly_wait(10)
       driver.maximize_window()
@@ -196,31 +196,29 @@ def test_VerifyAllClickables(test_setup):
         LONG_TIMEOUT = 60
         LOADING_ELEMENT_XPATH = "//body[@class='sidebar-xs loader_overlay']"
         try:
-            # ---------------------------Verify Settings icon click-----------------------------
-            PageName = "Settings icon"
-            Ptitle1 = ""
+            # --------------------------------Transfer assignment icon click----------------------------------------------
+            PageName = "Transfer assignment icon"
+            Ptitle1 = "Transfer Assignment"
             try:
-                driver.find_element_by_xpath("//i[@class='icon-paragraph-justify3']/parent::a").click()
-                time.sleep(2)
-                driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[11]/a").click()
-                time.sleep(2)
-
+                driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[7]/a").click()
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
-                time.sleep(2)
+                driver.find_element_by_xpath("//input[@data-test-id='2015030515570700545405']").click()
+                PageTitle1 = driver.find_element_by_xpath("//h2[text()='Transfer Assignment']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present in left menu and able to click")
                 TestResult.append(PageName + " is present in left menu and able to click")
                 TestResultStatus.append("Pass")
-            except Exception as ee:
-                print(ee)
-                TestResult.append(PageName + " is not present")
+            except Exception:
+                print(PageName + " is not clickable")
+                TestResult.append(PageName + " is not clickable")
                 TestResultStatus.append("Fail")
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
+            time.sleep(3)
+            # ----------------------------------------------------------------------------------------------------------
 
             # ---------------------------Verify working of Additional Contact Types button under system settings-----------------------------
             PageName = "Additional Contact Types button"

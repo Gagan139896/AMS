@@ -10,7 +10,7 @@ from fpdf import FPDF
 import pytest
 from selenium import webdriver
 import allure
-from selenium.webdriver import ActionChains
+from selenium.webdriver import ActionChains, chrome
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.select import Select
 from sys import platform
@@ -21,6 +21,8 @@ from selenium.common.exceptions import TimeoutException
 import pyperclip
 import random
 import os
+
+from self import self
 
 
 @allure.step("Entering username ")
@@ -191,7 +193,7 @@ def test_setup():
                     checkcount1 = 1
       #-----------------------------------------------------------------------------
 
-      driver.quit()
+      #driver.quit()
 
 @pytest.mark.smoke
 def test_VerifyAllClickables(test_setup):
@@ -206,8 +208,8 @@ def test_VerifyAllClickables(test_setup):
 
         try:
             #---------------To verify Organisation Chart icon click-----------------
-            PageName = "Organisation Chart icon"
-            Ptitle1 = "Organisation Chart"
+            PageName = "Organisation chart icon"
+            Ptitle1 = "Organisation chart"
             try:
                 driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[5]/a").click()
                 for load in range(LONG_TIMEOUT):
@@ -217,12 +219,12 @@ def test_VerifyAllClickables(test_setup):
                     except Exception:
                         break
                 driver.find_element_by_xpath("//input[@title='Enter text to search']").click()
+                time.sleep(2)
                 PageTitle1 = driver.find_element_by_xpath("//h2[@class='header-title']").text
-                print("PageTitle1 is : "+ str(PageTitle1) )
-                assert PageTitle1 in Ptitle1, PageName + " not present"
-                print(PageName + " is present in left menu and able to click")
-                TestResult.append(PageName + " is present in left menu and able to click")
-                TestResultStatus.append("Pass")
+                if PageTitle1 == "Organisation Chart":
+                    print(PageName + " is present in left menu and able to click")
+                    TestResult.append(PageName + " is present in left menu and able to click")
+                    TestResultStatus.append("Pass")
             except Exception:
                 print(PageName + " is not clickable")
                 TestResult.append(PageName + " is not clickable")
@@ -290,27 +292,48 @@ def test_VerifyAllClickables(test_setup):
                 time.sleep(5)
                 #------------------------------------------------------------------------------------------
                 # ----------------------------CLICKING ON SUBMIT BUTTON---------------------------
-                driver.find_element(By.XPATH, "//button[@title='Submit']").click()
+                driver.find_element_by_xpath("//button[@title='Submit']").click()
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
-                PageTitle1 = driver.find_element_by_xpath("//h2[@class='header-title']").text
-                if PageTitle1 == "Organisation Chart":
-                    TestResult.append(PageName+ " is working fine")
-                    TestResultStatus.append("Pass")
-                    sheet2.cell(7,1).value = User_ID
-                    wb2.save(loc2)
+               #----------------------NEED TO WORK-----------------------------------
+                try:
+                    try:
+                        PageTitle1 = driver.find_element_by_xpath("//span[@id='modaldialog_hd_title']")
+                        if PageTitle1.is_displayed() == True:
+                            time.sleep(5)
+                            TestResult.append(PageName + " is not working. Because add operator window is not closed after submission the form")
+                            TestResultStatus.append("Fail")
+                    except Exception:
+                        try:
+                            print("Checking for alert message")
+                            alert = driver.switch_to_alert()
+                            alert_text = alert.text
+                            time.sleep(5)
+                            print(alert_text)
+                            alert.accept()
+                            TestResult.append(PageName + " is not working. Below alert message is found\n" + alert_text)
+                            TestResultStatus.append("Fail")
+                            print()
+                        except Exception:
+                            print(PageName + " is working fine")
+                            TestResult.append(PageName + " is working fine")
+                            TestResultStatus.append("Pass")
+                            sheet2.cell(7, 1).value = User_ID
+                            wb2.save(loc2)
+                except Exception:
+                    print("Inside exception")
+                    pass
             except Exception as errrr:
                 print(errrr)
-                TestResult.append(PageName+ " is not working")
+                print("Organisation chart page is not working")
+                TestResult.append("Organisation chart page is not working")
                 TestResultStatus.append("Fail")
-
         except Exception:
             pass
-
 
     else:
         print()

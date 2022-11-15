@@ -229,6 +229,7 @@ def test_VerifyAllClickables(test_setup):
                 print(PageName + " is not clickable")
                 TestResult.append(PageName + " is not clickable")
                 TestResultStatus.append("Fail")
+            time.sleep(3)
             #--------------------------------------------------------------------------------------------
 
             #----------------Searching asset type---------------------------------------------
@@ -237,9 +238,10 @@ def test_VerifyAllClickables(test_setup):
                 #--------Entering asset type------------
                 AssetType = driver.find_element_by_xpath("//input[@data-test-id='202204250843470340998']")
                 AssetType.send_keys(sheet2.cell(3, 1).value)
+                time.sleep(2)
                 AssetType.send_keys(Keys.DOWN)
                 AssetType.send_keys(Keys.ENTER)
-                time.sleep(5)
+                time.sleep(3)
                 #---------Clicking on Search button------------
                 driver.find_element_by_xpath("//button[@data-test-id='202206091157570013179']").click()
                 for load in range(LONG_TIMEOUT):
@@ -259,6 +261,7 @@ def test_VerifyAllClickables(test_setup):
                         TestResult.append(PageName + " is working fine")
                         TestResultStatus.append("Pass")
                 except Exception:
+                    time.sleep(2)
                     #--------Getting text when no asset type record found after applying filter-----------
                     No_Results = driver.find_element_by_xpath("//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='2']/div[2]//tbody/tr[2]/td[1]").is_displayed()
                     if No_Results == True:
@@ -280,6 +283,7 @@ def test_VerifyAllClickables(test_setup):
                 print("Asset type search not is working fine. Below error found : "+str(err))
                 TestResult.append("Asset type search not is working fine. Below error found : "+str(err))
                 TestResultStatus.append("Fail")
+            time.sleep(3)
             #---------------------------------------------------------------------------------------
 
             # ----------------Searching Asset---------------------------------------------
@@ -288,9 +292,10 @@ def test_VerifyAllClickables(test_setup):
                 # --------Entering Asset------------
                 Asset = driver.find_element_by_xpath("//input[@data-test-id='202204250843470341228']")
                 Asset.send_keys(sheet2.cell(3, 2).value)
+                time.sleep(2)
                 Asset.send_keys(Keys.DOWN)
                 Asset.send_keys(Keys.ENTER)
-                time.sleep(5)
+                time.sleep(3)
                 # ---------Clicking on Search button------------
                 driver.find_element_by_xpath("//button[@data-test-id='202206091157570013179']").click()
                 for load in range(LONG_TIMEOUT):
@@ -304,19 +309,18 @@ def test_VerifyAllClickables(test_setup):
                 time.sleep(2)
                 try:
                     #----------Getting text of filtered asset---------------
-                    Asset_Text = driver.find_element_by_xpath(
-                        "//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='3']/div[2]//tbody/tr[2]/td[2]").text
-                    if sheet2.cell(3, 1).value == Asset_Text:
+                    Asset_Text = driver.find_element_by_xpath("//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='3']/div[2]//tbody/tr[2]/td[2]/span").text
+                    if sheet2.cell(3, 2).value == Asset_Text:
                         print(PageName + " is working fine for asset type")
                         TestResult.append(PageName + " is working fine for asset type")
                         TestResultStatus.append("Pass")
                 except Exception:
+                    time.sleep(2)
                     #-------------Getting text when No Asset Record found after applying filter-----------
-                    No_Results = driver.find_element_by_xpath(
-                        "//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='3']/div[2]//tbody/tr[2]/td[1]").is_displayed()
+                    No_Results = driver.find_element_by_xpath("//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='3']/div[2]//tbody/tr[2]/td[1]").is_displayed()
                     if No_Results == True:
-                        print(PageName + " is not working fine for asset type. Because asset type not found in grid after applying search")
-                        TestResult.append(PageName + " is not working fine for asset type. Because asset type not found in grid after applying search")
+                        print(PageName + " is not working fine for asset. Because asset not found in grid after applying search")
+                        TestResult.append(PageName + " is not working fine for asset. Because asset not found in grid after applying search")
                         TestResultStatus.append("Fail")
                 driver.find_element_by_xpath("//button[@data-test-id='202206091157570014628']").click()
                 try:
@@ -333,6 +337,58 @@ def test_VerifyAllClickables(test_setup):
                 print("Asset search is not working fine. Below error found : " + str(err))
                 TestResult.append("Asset search not is working fine. Below error found : " + str(err))
                 TestResultStatus.append("Fail")
+            time.sleep(3)
+            # ---------------------------------------------------------------------------------------
+
+            # ----------------Searching Activity---------------------------------------------
+            PageName = "360 search for Activity"
+            try:
+                # --------Entering Activity------------
+                Activity = driver.find_element_by_xpath("//input[@data-test-id='202204250851440995455']")
+                Activity.send_keys(sheet2.cell(3, 3).value)
+                time.sleep(2)
+                Activity.send_keys(Keys.DOWN)
+                Activity.send_keys(Keys.ENTER)
+                time.sleep(3)
+                # ---------Clicking on Search button------------
+                driver.find_element_by_xpath("//button[@data-test-id='202206091157570013179']").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                try:
+                    # ----------Getting text of filtered activity---------------
+                    Activity_Text = driver.find_element_by_xpath("//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='1']/div[2]//tbody/tr[2]/td[2]/span").text
+                    if sheet2.cell(3, 3).value == Activity_Text:
+                        print(PageName + " is working fine for activity")
+                        TestResult.append(PageName + " is working fine for activity")
+                        TestResultStatus.append("Pass")
+                except Exception:
+                    time.sleep(2)
+                    # -------------Getting text when No activity Record found after applying filter-----------
+                    No_Results = driver.find_element_by_xpath("//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='1']/div[2]//tbody/tr[2]/td[1]").is_displayed()
+                    if No_Results == True:
+                        print(PageName + " is not working fine for activity. Because activity not found in grid after applying search")
+                        TestResult.append(PageName + " is not working fine for activity. Because activity not found in grid after applying search")
+                        TestResultStatus.append("Fail")
+                driver.find_element_by_xpath("//button[@data-test-id='202206091157570014628']").click()
+                try:
+                    Is_True = Activity.get_attribute('value')
+                    if Is_True == sheet2.cell(3, 3).value:
+                        print("Clear button is not working fine for Activity search")
+                        TestResult.append("Clear button is not working fine for Activity search")
+                        TestResultStatus.append("Fail")
+                except Exception:
+                    print("Clear button is working fine for Activity search")
+                    TestResult.append("Clear button is working fine for Activity search")
+                    TestResultStatus.append("Pass")
+            except Exception as err:
+                print("Activity search is not working fine. Below error found : " + str(err))
+                TestResult.append("Activity search not is working fine. Below error found : " + str(err))
+                TestResultStatus.append("Fail")
+            time.sleep(3)
             # ---------------------------------------------------------------------------------------
 
         except Exception as rrr:
