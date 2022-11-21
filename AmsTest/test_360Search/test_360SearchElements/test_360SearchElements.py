@@ -44,12 +44,10 @@ def test_setup():
   Exe="Yes"
   Directory = 'test_360Search/'
 
-  if Exe == "Yes":
-      if platform == "linux" or platform == "linux2":
-          driver = webdriver.Chrome(
-              executable_path="/home/legion/office 1wayit/AVER/AverTest1/chrome/chromedriverLinux1")
-      elif platform == "win32" or platform == "win64":
-          driver = webdriver.Chrome(executable_path="/AmsTest/chrome/chromedriver.exe")
+  if platform == "linux" or platform == "linux2":
+      path = '/home/legion/office 1wayit/AVER/AverTest1/' + Directory
+  elif platform == "win32" or platform == "win64":
+      path = 'D:/AMS/AmsTest/' + Directory
 
   MachineName = os.getenv('COMPUTERNAME')
   print(MachineName)
@@ -71,14 +69,12 @@ def test_setup():
               elif sheetx.cell(ix, 2).value == "Yes":
                   Exe="Yes"
 
-  if Exe=="Yes":
+  if Exe == "Yes":
       if platform == "linux" or platform == "linux2":
-          driver = webdriver.Chrome(executable_path="/home/legion/office 1wayit/AVER/AverTest1/chrome/chromedriverLinux")
+          driver = webdriver.Chrome(
+              executable_path="/home/legion/office 1wayit/AVER/AverTest1/chrome/chromedriverLinux1")
       elif platform == "win32" or platform == "win64":
-          if MachineName == "DESKTOP-JLLTS65":
-              driver = webdriver.Chrome(executable_path="C:/AVER/AverTest1/chrome/chromedriver.exe")
-          else:
-              driver = webdriver.Chrome(executable_path="/AverTest1/chrome/chromedriver.exe")
+          driver = webdriver.Chrome(executable_path="D:/AMS/AmsTest/chrome/chromedriver.exe")
 
       driver.implicitly_wait(10)
       driver.maximize_window()
@@ -89,10 +85,8 @@ def test_setup():
 
   yield
   if Exe == "Yes":
-      time_change = datetime.timedelta(hours=5)
-      new_time = datetime.datetime.now() + time_change
+      new_time = datetime.datetime.now()
       ctReportHeader = new_time.strftime("%d %B %Y %I %M%p")
-
       ct = new_time.strftime("%d_%B_%Y_%I_%M%p")
 
       class PDF(FPDF):
@@ -194,95 +188,57 @@ def test_setup():
 
 @pytest.mark.smoke
 def test_VerifyAllClickables(test_setup):
+    global Element1
     if Exe == "Yes":
         TimeSpeed = 2
         SHORT_TIMEOUT = 2
         LONG_TIMEOUT = 60
-        LOADING_ELEMENT_XPATH = "//div[@class='main-loader LoaderImageLogo']"
+        LOADING_ELEMENT_XPATH = "//div[@class='loader']"
         try:
-            # ---------------------------Verify Client Listing elements-----------------------------
-            PageName = "Client Listing icon"
-            Ptitle1 = ""
+            # -------360 Search icon click------------------------
+            PageName = "360 Search icon"
+            Ptitle1 = "GO FOR 360° SEARCH"
             try:
-                driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[3]/a/i").click()
-                time.sleep(2)
+                driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[1]/a").click()
                 for load in range(LONG_TIMEOUT):
                     try:
-                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed()==True:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
+                PageTitle1 = driver.find_element_by_xpath("//div[@data-test-id='202205040525180362469']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present in left menu and able to click")
                 TestResult.append(PageName + " is present in left menu and able to click")
                 TestResultStatus.append("Pass")
             except Exception:
-                TestResult.append(PageName + " is not present")
+                print(PageName + " is not clickable")
+                TestResult.append(PageName + " is not clickable")
                 TestResultStatus.append("Fail")
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
+            time.sleep(3)
+            # --------------------------------------------------------------------------------------------
 
             # ---------------------------Verify Page title-----------------------------
             PageName = "Page title"
-            Ptitle1 = "Client Listing"
+            Ptitle1 = "GO FOR 360° SEARCH"
             try:
                 PageTitle1 = driver.find_element_by_xpath(
-                    "//h2[text()='Client Listing']").text
+                    "//div[@data-test-id='202205040525180362469']").text
                 print(PageTitle1)
                 assert PageTitle1 in Ptitle1, PageName + " not present"
-                TestResult.append(PageName + " (Client Listing) is present")
+                TestResult.append(PageName + " ("+PageTitle1+") is present on 360 search page")
                 TestResultStatus.append("Pass")
             except Exception:
-                TestResult.append(PageName + " (Client Listing) is not present")
+                TestResult.append(PageName + " is not present on 360 search page")
                 TestResultStatus.append("Fail")
             print()
             # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of Total active participants tab -------------------------------------
-            PageName = "Total active participants tab"
-            Ptitle1 = "Total active participants "
+            # ---------------------------Verify presence of Search text-------------------------------------
+            PageName = "Search text"
+            Ptitle1 = "Search"
             try:
-                PageTitle1 = driver.find_element_by_xpath(
-                    "//p[text()='Total active participants ']").text
-                print(PageTitle1)
-                if "\n" in PageTitle1:
-                    PageTitle1 = PageTitle1.split("\n")
-                    PageTitle1 = PageTitle1[0]
-                    print(PageTitle1)
-                assert PageTitle1 in Ptitle1, PageName + " not present"
-                TestResult.append(PageName + " is present")
-                TestResultStatus.append("Pass")
-            except Exception:
-                TestResult.append(PageName + " is not present")
-                TestResultStatus.append("Fail")
-            print()
-            # ---------------------------------------------------------------------------------
-
-            # ---------------------------Verify Presence of Participants added today tab -------------------------------------
-            PageName = "Participants added today tab"
-            Ptitle1 = "Participants added Today"
-            try:
-                PageTitle1 = driver.find_element_by_xpath(
-                    "//p[text()='Participants added Today ']").text
-                print(PageTitle1)
-                if "\n" in PageTitle1:
-                    PageTitle1 = PageTitle1.split("\n")
-                    PageTitle1 = PageTitle1[0]
-                    print(PageTitle1)
-                assert PageTitle1 in Ptitle1, PageName + " not present"
-                TestResult.append(PageName + " is present")
-                TestResultStatus.append("Pass")
-            except Exception:
-                TestResult.append(PageName + " is not present")
-                TestResultStatus.append("Fail")
-            print()
-            # ---------------------------------------------------------------------------------
-
-            # ---------------------------Verify Presence of Back button -------------------------------------
-            PageName = "Back button"
-            Ptitle1 = "Back"
-            try:
-                PageTitle1 = driver.find_element_by_xpath(
-                    "//a[text()='Back']").text
+                PageTitle1 = driver.find_element_by_xpath("//h2[text()='Search']").text
                 print(PageTitle1)
                 assert PageTitle1 in Ptitle1, PageName + " not present"
                 TestResult.append(PageName + " is present")
@@ -293,12 +249,12 @@ def test_VerifyAllClickables(test_setup):
             print()
             # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of Create New Client button-------------------------------------
-            PageName = "Create New Client button"
-            Ptitle1 = "Create New Client"
+            # ---------------------------Verify Presence of Asset Type field label -------------------------------------
+            PageName = "Asset Type field label"
+            Ptitle1 = "Asset Type"
             try:
                 PageTitle1 = driver.find_element_by_xpath(
-                    "//a[text()='Create New Client']").text
+                    "//label[@data-test-id='202204250843470340998-Label']").text
                 print(PageTitle1)
                 assert PageTitle1 in Ptitle1, PageName + " not present"
                 TestResult.append(PageName + " is present")
@@ -309,12 +265,12 @@ def test_VerifyAllClickables(test_setup):
             print()
             # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of Import button-------------------------------------
-            PageName = "Import button"
-            Ptitle1 = "Import"
+            # ---------------------------Verify Presence of Asset field label -------------------------------------
+            PageName = "Asset field label"
+            Ptitle1 = "Asset"
             try:
                 PageTitle1 = driver.find_element_by_xpath(
-                    "//a[text()='Import']").text
+                    "//label[@data-test-id='202204250843470341228-Label']").text
                 print(PageTitle1)
                 assert PageTitle1 in Ptitle1, PageName + " not present"
                 TestResult.append(PageName + " is present")
@@ -325,12 +281,12 @@ def test_VerifyAllClickables(test_setup):
             print()
             # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of Download to CSV button-------------------------------------
-            PageName = "Download to CSV button"
-            Ptitle1 = "Download to CSV"
+            # ---------------------------Verify Presence of Activity field label -------------------------------------
+            PageName = "Activity field label"
+            Ptitle1 = "Activity"
             try:
                 PageTitle1 = driver.find_element_by_xpath(
-                    "//a[text()='Download to CSV']").text
+                    "//label[@data-test-id='202204250851440995455-Label']").text
                 print(PageTitle1)
                 assert PageTitle1 in Ptitle1, PageName + " not present"
                 TestResult.append(PageName + " is present")
@@ -341,12 +297,11 @@ def test_VerifyAllClickables(test_setup):
             print()
             # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of Create Report button-------------------------------------
-            PageName = "Create Report button"
-            Ptitle1 = "Create Report"
+            # ---------------------------Verify Presence of Search button -------------------------------------
+            PageName = "Search button"
+            Ptitle1 = "Search"
             try:
-                PageTitle1 = driver.find_element_by_xpath(
-                    "//a[text()='Create Report']").text
+                PageTitle1 = driver.find_element_by_xpath("//button[@data-test-id='202206091157570013179']").text
                 print(PageTitle1)
                 assert PageTitle1 in Ptitle1, PageName + " not present"
                 TestResult.append(PageName + " is present")
@@ -357,15 +312,14 @@ def test_VerifyAllClickables(test_setup):
             print()
             # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of search filter for client table-------------------------------------
-            PageName = "Search filter for client table"
-            Ptitle1 = ""
+            # ---------------------------Verify Presence of Clear button -------------------------------------
+            PageName = "Clear button"
+            Ptitle1 = "Clear"
             try:
-                driver.find_element_by_xpath(
-                    "//input[@id='searchFilter']").clear()
-                driver.find_element_by_xpath(
-                    "//input[@id='searchFilter']").send_keys("Test search")
-                TestResult.append(PageName + " is present and user is able to send inputs")
+                PageTitle1 = driver.find_element_by_xpath("//button[@data-test-id='202206091157570014628']").text
+                print(PageTitle1)
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                TestResult.append(PageName + " is present")
                 TestResultStatus.append("Pass")
             except Exception:
                 TestResult.append(PageName + " is not present")
@@ -373,8 +327,161 @@ def test_VerifyAllClickables(test_setup):
             print()
             # ---------------------------------------------------------------------------------
 
+            # ---------------------------Verify Presence of Activities tab-------------------------------------
+            PageName = "Activities tab"
+            Ptitle1 = "Activities"
+            try:
+                PageTitle1 = driver.find_element_by_xpath(
+                    "//div[@data-layout-id='202209150520030684']/h3/i").text
+                print(PageTitle1)
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                TestResult.append(PageName + " is present")
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present")
+                TestResultStatus.append("Fail")
+            print()
+            # ---------------------------------------------------------------------------------
 
+            # ---------------------------Verify Presence of Asset type-------------------------------------
+            PageName = "Asset type"
+            Ptitle1 = "Asset type"
+            try:
+                PageTitle1 = driver.find_element_by_xpath("//div[@data-layout-id='202209150520030801']/h3/i").text
+                print(PageTitle1)
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                TestResult.append(PageName + " is present")
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present")
+                TestResultStatus.append("Fail")
+            print()
+            # ---------------------------------------------------------------------------------
 
+            # ---------------------------Verify Presence of Assets-------------------------------------
+            PageName = "Assets"
+            Ptitle1 = "Assets"
+            try:
+                PageTitle1 = driver.find_element_by_xpath("//div[@data-layout-id='202209150520030978']/h3/i").text
+                print(PageTitle1)
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                TestResult.append(PageName + " is present")
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present")
+                TestResultStatus.append("Fail")
+            print()
+            # ---------------------------------------------------------------------------------
+
+            # # ---------------------------Verify Presence of elements in 360 search-Activities table-----------------------------
+            inside = "360 search-Activities"
+            # ---------------loop for Columns in table for table headers View----------
+            ItemList = ["Name", "Asset Type", "Frequency", "Planning In Days", "Region", "State", "Unit"]
+            ItemPresent = []
+            ItemNotPresent = []
+            for ii in range(len(ItemList)):
+                Text1 = ItemList[ii]
+                print(ii)
+                try:
+                    Element1 = driver.find_element_by_xpath("//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='1']/div[2]//tbody/tr[1]/th["+str(ii+2)+"]/div[1]").text
+                    print(Element1)
+                except Exception:
+                    pass
+                try:
+                    assert Text1 in Element1, Text1 + " column under " + inside + " table is not present"
+                    ItemPresent.append(Text1)
+                except Exception as e1:
+                    ItemNotPresent.append(Text1)
+            if ItemPresent:
+                print("ItemPresent list is not empty")
+                ListC = ', '.join(ItemPresent)
+                TestResult.append("Below columns are present under [ " + inside + " ] table\n" + ListC)
+                TestResultStatus.append("Pass")
+            if ItemNotPresent:
+                print("ItemNotPresent list is not empty")
+                ListD = ', '.join(ItemNotPresent)
+                TestResult.append("Below columns are not present under [ " + inside + " ] table\n" + ListD)
+                TestResultStatus.append("Fail")
+            driver.find_element_by_xpath("//h3[text()='Asset Type']").click()
+            for load in range(LONG_TIMEOUT):
+                try:
+                    if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                        time.sleep(0.5)
+                except Exception:
+                    break
+            # # ---------------------------------------------------------------------------------
+
+            # # ---------------------------Verify Presence of elements in 360 search-Asset type table-----------------------------
+            inside = "360 search-Asset type"
+            # ---------------loop for Columns in table for table headers View----------
+            ItemList = ["Asset Type", "Region",  "State", "Unit"]
+            ItemPresent = []
+            ItemNotPresent = []
+            for ii in range(len(ItemList)):
+                Text1 = ItemList[ii]
+                print(ii)
+                try:
+                    Element1 = driver.find_element_by_xpath(
+                        "//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='2']/div[2]//tbody/tr[1]/th[" + str(ii + 2) + "]/div[1]").text
+                    print(Element1)
+                except Exception:
+                    pass
+                try:
+                    assert Text1 in Element1, Text1 + " column under " + inside + " table is not present"
+                    ItemPresent.append(Text1)
+                except Exception as e1:
+                    ItemNotPresent.append(Text1)
+            if ItemPresent:
+                print("ItemPresent list is not empty")
+                ListC = ', '.join(ItemPresent)
+                TestResult.append("Below columns are present under [ " + inside + " ] table\n" + ListC)
+                TestResultStatus.append("Pass")
+            if ItemNotPresent:
+                print("ItemNotPresent list is not empty")
+                ListD = ', '.join(ItemNotPresent)
+                TestResult.append("Below columns are not present under [ " + inside + " ] table\n" + ListD)
+                TestResultStatus.append("Fail")
+            driver.find_element_by_xpath("//h3[text()='Assets']").click()
+            for load in range(LONG_TIMEOUT):
+                try:
+                    if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                        time.sleep(0.5)
+                except Exception:
+                    break
+            # # ---------------------------------------------------------------------------------
+
+            # # ---------------------------Verify Presence of elements in 360 search-Asset table-----------------------------
+            inside = "360 search-Asset"
+            # ---------------loop for Columns in table for table headers View----------
+            ItemList = ["Asset Name", "Linked to Asset Type", "Whether In Use", "Specifications", "Service Start Date", "Region",  "State", "Unit"]
+            ItemPresent = []
+            ItemNotPresent = []
+            for ii in range(len(ItemList)):
+                Text1 = ItemList[ii]
+                print(ii)
+                try:
+                    Element1 = driver.find_element_by_xpath("//div[@data-test-id='202206090831230119525']//div[@data-lg-child-id='3']/div[2]//tbody/tr[1]/th[" + str(
+                            ii + 2) + "]/div[1]").text
+                    print(Element1)
+                except Exception:
+                    pass
+                try:
+                    assert Text1 in Element1, Text1 + " column under " + inside + " table is not present"
+                    ItemPresent.append(Text1)
+                except Exception as e1:
+                    ItemNotPresent.append(Text1)
+            if ItemPresent:
+                print("ItemPresent list is not empty")
+                ListC = ', '.join(ItemPresent)
+                TestResult.append("Below columns are present under [ " + inside + " ] table\n" + ListC)
+                TestResultStatus.append("Pass")
+            if ItemNotPresent:
+                print("ItemNotPresent list is not empty")
+                ListD = ', '.join(ItemNotPresent)
+                TestResult.append("Below columns are not present under [ " + inside + " ] table\n" + ListD)
+                TestResultStatus.append("Fail")
+
+            # # ---------------------------------------------------------------------------------
         except Exception as err:
             print(err)
             pass

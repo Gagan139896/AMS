@@ -13,6 +13,7 @@ from sys import platform
 
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -190,78 +191,114 @@ def test_VerifyAllClickables(test_setup):
         TimeSpeed = 1
         SHORT_TIMEOUT = 5
         LONG_TIMEOUT = 400
-        LOADING_ELEMENT_XPATH = "//body[@class='sidebar-xs loader_overlay']"
+        LOADING_ELEMENT_XPATH = "//div[@class='loader']"
         try:
-            # ---------------------------Verify Settings icon click-----------------------------
-            PageName = "Settings icon"
-            Ptitle1 = ""
-            try:
-                driver.find_element_by_xpath("//i[@class='icon-paragraph-justify3']/parent::a").click()
-                time.sleep(2)
-                driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[11]/a").click()
-                time.sleep(2)
 
+            # --------------------------------Transfer assignment icon click----------------------------------------------
+            PageName = "Transfer assignment icon"
+            Ptitle1 = "Transfer Assignment"
+            try:
+                driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[7]/a").click()
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
-
-                time.sleep(2)
+                driver.find_element_by_xpath("//input[@data-test-id='2015030515570700545405']").click()
+                PageTitle1 = driver.find_element_by_xpath("//h2[text()='Transfer Assignment']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present in left menu and able to click")
                 TestResult.append(PageName + " is present in left menu and able to click")
                 TestResultStatus.append("Pass")
-            except Exception as ee:
-                print(ee)
-                TestResult.append(PageName + " is not present")
+            except Exception:
+                print(PageName + " is not clickable")
+                TestResult.append(PageName + " is not clickable")
                 TestResultStatus.append("Fail")
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
+            # ----------------------------------------------------------------------------------------------------------
+
+            # --------------------------------Transfer assignment icon click----------------------------------------------
+            PageName = "Transfer assignment icon"
+            Ptitle1 = "Transfer Assignment"
+            try:
+                driver.find_element_by_xpath("//div[@data-test-id='201808081157350664772']/div[2]//li[7]/a").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                driver.find_element_by_xpath("//input[@data-test-id='2015030515570700545405']").click()
+                PageTitle1 = driver.find_element_by_xpath("//h2[text()='Transfer Assignment']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present in left menu and able to click")
+                TestResult.append(PageName + " is present in left menu and able to click")
+                TestResultStatus.append("Pass")
+            except Exception:
+                print(PageName + " is not clickable")
+                TestResult.append(PageName + " is not clickable")
+                TestResultStatus.append("Fail")
+            # ----------------------------------------------------------------------------------------------------------
 
             # ---------------------------Verify Page title-----------------------------
             PageName = "Page title"
-            Ptitle1 = "Settings"
+            Ptitle1 = "Transfer Assignment"
             try:
-                PageTitle1 = driver.find_element_by_xpath(
-                    "//h2[text()='Settings']").text
+                PageTitle1 = driver.find_element_by_xpath("//h2[text()='Transfer Assignment']").text
                 print(PageTitle1)
                 assert PageTitle1 in Ptitle1, PageName + " not present"
-                TestResult.append(PageName + " (Settings) is present")
+                TestResult.append(PageName + " (Transfer Assignment) is present")
                 TestResultStatus.append("Pass")
             except Exception:
-                TestResult.append(PageName + " (Settings) is not present")
+                TestResult.append(PageName + " (Transfer Assignment) is not present")
                 TestResultStatus.append("Fail")
             print()
             # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of back button on Settings page-----------------------------
-            PageName = "Back button"
-            Ptitle1 = "Back"
+            # ---------------------------Verify Operator DDL label-----------------------------
+            PageName = "Operator DDL label"
+            Ptitle1 = "Operator"
             try:
-                PageTitle1 = driver.find_element_by_xpath("//a[text()='Back']").text
+                PageTitle1 = driver.find_element_by_xpath("//label[@data-test-id='202207141255050654409-Label']").text
                 print(PageTitle1)
-                assert PageTitle1 in Ptitle1, PageName + " not able to open"
-                TestResult.append(PageName + "  is present on Settings page")
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                TestResult.append(PageName + " is present")
                 TestResultStatus.append("Pass")
             except Exception:
-                TestResult.append(PageName + " is not present on Settings page")
+                TestResult.append(PageName + " is not present")
                 TestResultStatus.append("Fail")
             print()
-            time.sleep(TimeSpeed)
             # ---------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of Staff Settings text on Settings page-----------------------------
-            PageName = "Staff Settings text"
-            Ptitle1 = "Staff Settings"
+            # -------------Presence of Operator from DDL--------------------------------------------
+            PageName = "Operator dropdown"
             try:
-                PageTitle1 = driver.find_element_by_xpath("//h2[text()='Staff Settings']").text
-                print(PageTitle1)
-                assert PageTitle1 in Ptitle1, PageName + " not able to open"
-                TestResult.append(PageName + "  is present on Settings page")
+                Operator_DDL = Select(driver.find_element_by_xpath("//div[@data-test-id='202207141255050652255']//select"))
+                Operator_DDL.select_by_index(1)
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                TestResult.append(PageName+ " is selected from opertor DDL")
                 TestResultStatus.append("Pass")
             except Exception:
-                TestResult.append(PageName + " is not present on Settings page")
+                TestResult.append(PageName+ " is not selected from opertor DDL")
+                TestResultStatus.append("Fail")
+            # ---------------------------------------------------------------------------------
+
+            # ---------------------------Verify Presence Operator's Worklist text-----------------------------
+            PageName = "Operator's Worklist text"
+            Ptitle1 = "Operator's Worklist"
+            try:
+                PageTitle1 = driver.find_element_by_xpath("//div[@class='dl-accordion-btn']").text
+                print(PageTitle1)
+                assert PageTitle1 in Ptitle1, PageName + " not able to open"
+                TestResult.append(PageName + "  is present on transfer assignment page")
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present on transfer assignment page")
                 TestResultStatus.append("Fail")
             print()
             time.sleep(TimeSpeed)

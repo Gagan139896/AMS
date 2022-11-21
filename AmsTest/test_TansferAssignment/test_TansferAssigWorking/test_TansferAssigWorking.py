@@ -254,13 +254,14 @@ def test_VerifyAllClickables(test_setup):
                     Operator_Worklist.click()
                 try:
                     #-----------Clicking on select checkbox in grid-------------
-                    Select_Checkbox = driver.find_element_by_xpath("//input[@data-test-id='2016072109335505834280']")
+                    Select_Checkbox = driver.find_element_by_xpath("//div[@class='oflowDivM ']/input[2]")
                     Select_Checkbox1 = Select_Checkbox.is_enabled()
                     print("Select_Checkbox1 " +str(Select_Checkbox1))
                     if Select_Checkbox1 == True:
                         print("11111")
+                        time.sleep(3)
                         Select_Checkbox.click()
-                        time.sleep(1)
+                        time.sleep(2)
 
                         #------------Getting "Transfer To" radio buttons count-----------------------
                         Transfer_To_Count = driver.find_elements_by_xpath("//div[@data-test-id='202207141356190159493']/div/span/input")
@@ -273,9 +274,10 @@ def test_VerifyAllClickables(test_setup):
                             print("Transfer_To_Rand "+str(Transfer_To_Rand))
                             User_DDL_Count = driver.find_elements_by_xpath("//div[@data-test-id='202207130209200655486']/div[2]//select/option")
                             User_DDL_Rand = random.randrange(1, len(User_DDL_Count)+1)
-                            print(User_DDL_Rand)
+                            print("User_DDL_Rand "+str(User_DDL_Rand))
                             User_DDL = Select(driver.find_element_by_xpath("//div[@data-test-id='202207130209200655486']/div[2]//select"))
                             User_DDL.select_by_index(User_DDL_Rand)
+                            print("User is selected from user DDL")
                             TestResult.append("User is selected from user DDL")
                             TestResultStatus.append("Pass")
 
@@ -284,9 +286,10 @@ def test_VerifyAllClickables(test_setup):
                             print("Transfer_To_Rand " + str(Transfer_To_Rand))
                             Work_Basket_Count = driver.find_elements_by_xpath("//select[@data-test-id='20220826151510017318']/option")
                             Work_Basket_Rand = random.randrange(1, len(Work_Basket_Count) + 1)
-                            print(Work_Basket_Rand)
+                            print("Work_Basket_Rand "+str(Work_Basket_Rand))
                             Work_Basket_DDL = Select(driver.find_element_by_xpath("//select[@data-test-id='20220826151510017318']"))
                             Work_Basket_DDL.select_by_index(Work_Basket_Rand)
+                            print("Work basket is selected from work basket DDL")
                             TestResult.append("Work basket is selected from work basket DDL")
                             TestResultStatus.append("Pass")
                         driver.find_element_by_xpath("//button[@data-test-id='202207130209200657887']").click()
@@ -314,7 +317,9 @@ def test_VerifyAllClickables(test_setup):
                             TestResult.append("'" + No_Work_Asgn + "' : " "text found when there is no work assignment present in grid for selected operator")
                             TestResultStatus.append("Pass")
                     except Exception:
-                        print("333333")
+                        print("'No_Work_Asgn' exception")
+                        TestResult.append("Transfer assignment is not working fine")
+                        TestResultStatus.append("Fail")
             except Exception:
                 print(PageName + " is not clickable")
                 TestResult.append(PageName + " is not clickable")

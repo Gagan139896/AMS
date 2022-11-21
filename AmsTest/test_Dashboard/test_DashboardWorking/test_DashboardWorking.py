@@ -373,61 +373,61 @@ def test_VerifyAllClickables(test_setup):
             # time.sleep(TimeSpeed)
             # # ---------------------------------------------------------------------------------
             #
-            # # ---------------------------Verify pagination clicks in Operators List Table-----------------------------
-            # PageName = "Operators List table pagination"
-            #
-            # try:
-            #     # -------Getting total number of pages in Operators List table-----
-            #     Page_Count2 = driver.find_element_by_xpath("//div[@data-test-id='202207120559580902804']//label[@data-test-id='20141007100658002115508']").text
-            #     NumOfClicks2 = int(Page_Count2)
-            #     print("Page_Count2 " + str(Page_Count2))
-            #     print("NumOfClicks2 " + str(NumOfClicks2))
-            #
-            #     # ----For loop to page clicks----
-            #     for i in range(1, NumOfClicks2+1):
-            #         Operators_List_Rows = driver.find_elements_by_xpath(
-            #             "//table[@data-test-id='202207120559580902804-layout']/tbody//table//tr/td[1]/div")
-            #         NumRows2 = int(len(Operators_List_Rows))
-            #         print("NumRows1 " + str(NumRows2))
-            #         for ii in range(NumRows2):
-            #             Is_Present = driver.find_element_by_xpath(
-            #                 "//table[@data-test-id='202207120559580902804-layout']/tbody//table//tr[" + str(
-            #                     ii+2) + "]/td[1]/div").is_displayed()
-            #             if Is_Present == True:
-            #                 time.sleep(0.5)
-            #                 User_Name = driver.find_element_by_xpath("//table[@data-test-id='202207120559580902804-layout']/tbody//table//tr[" + str(
-            #                         ii+2) + "]/td[1]/div").text
-            #                 print(User_Name)
-            #                 #print(sheet2.cell(7, 1).value)
-            #                 if User_Name == sheet2.cell(7, 1).value:
-            #                     print("----------------------------------")
-            #                     print("User_Name is " + str(User_Name)+ " and Excel value is "+str(sheet2.cell(7, 1).value))
-            #                     print("Operators List table pagination is working")
-            #                     print("----------------------------------")
-            #                     TestResult.append(PageName + " is working fine for " + str(NumOfClicks2) + " pages and ")
-            #                     TestResultStatus.append("Pass")
-            #             else:
-            #                 pass
-            #         driver.find_element_by_xpath("//div[@data-test-id='202207120559580902804']//button[@title='Next Page']").click()
-            #         time.sleep(0.5)
-            #     driver.find_element_by_xpath("//div[@id='modaldialog_hd']/button[@class='container-close']").click()
-            #     for load in range(LONG_TIMEOUT):
-            #         try:
-            #             if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
-            #                 time.sleep(0.5)
-            #         except Exception:
-            #             break
-            #     PageTitle1 = driver.find_element_by_xpath("//h1[text()='Dashboard']").text
-            #     if PageTitle1 == "Dashboard":
-            #         print("Close button is working fine on Organization chart page")
-            #         TestResult.append("Close button is working fine on Organization chart page")
-            #         TestResultStatus.append("Pass")
-            # except Exception as err:
-            #     print(err)
-            #     TestResult.append(PageName + " is not working")
-            #     TestResultStatus.append("Fail")
-            # print()
-            # # ---------------------------------------------------------------------------------
+            # ---------------------------Verify pagination clicks in Operators List Table-----------------------------
+            PageName = "Operators List table pagination"
+
+            try:
+                # -------Getting total number of pages in Operators List table-----
+                Page_Count2 = driver.find_element_by_xpath("//div[@data-test-id='202207120559580902804']//label[@data-test-id='20141007100658002115508']").text
+                NumOfClicks2 = int(Page_Count2)
+                print("Page_Count2 " + str(Page_Count2))
+                print("NumOfClicks2 " + str(NumOfClicks2))
+
+                # ----For loop to page clicks----
+                for i in range(1, NumOfClicks2+1):
+                    Operators_List_Rows = driver.find_elements_by_xpath(
+                        "//table[@data-test-id='202207120559580902804-layout']/tbody//table//tr/td[1]/div")
+                    NumRows2 = int(len(Operators_List_Rows))
+                    print("NumRows1 " + str(NumRows2))
+                    for ii in range(NumRows2):
+                        Is_Present = driver.find_element_by_xpath(
+                            "//table[@data-test-id='202207120559580902804-layout']/tbody//table//tr[" + str(
+                                ii+2) + "]/td[1]/div").is_displayed()
+                        if Is_Present == True:
+                            time.sleep(0.5)
+                            User_Name = driver.find_element_by_xpath("//table[@data-test-id='202207120559580902804-layout']/tbody//table//tr[" + str(
+                                    ii+2) + "]/td[1]/div").text
+                            print(User_Name)
+                            #print(sheet2.cell(7, 1).value)
+                            if User_Name == sheet2.cell(7, 1).value:
+                                print("----------------------------------")
+                                print("User_Name is " + str(User_Name)+ " and Excel value is "+str(sheet2.cell(7, 1).value))
+                                print("Operators List table pagination is working")
+                                print("----------------------------------")
+                                TestResult.append(PageName + " is working fine for " + str(NumOfClicks2) + " pages and ")
+                                TestResultStatus.append("Pass")
+                        else:
+                            pass
+                    driver.find_element_by_xpath("//div[@data-test-id='202207120559580902804']//button[@title='Next Page']").click()
+                    time.sleep(0.5)
+                driver.find_element_by_xpath("//div[@id='modaldialog_hd']/button[@class='container-close']").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                PageTitle1 = driver.find_element_by_xpath("//h1[text()='Dashboard']").text
+                if PageTitle1 == "Dashboard":
+                    print("Close button is working fine on Organization chart page")
+                    TestResult.append("Close button is working fine on Organization chart page")
+                    TestResultStatus.append("Pass")
+            except Exception as err:
+                print(err)
+                TestResult.append(PageName + " is not working")
+                TestResultStatus.append("Fail")
+            print()
+            # ---------------------------------------------------------------------------------
 
             # ---------------------------Verify Breakdown report tab click--------------------------------
             PageName = "Breakdown report tab"

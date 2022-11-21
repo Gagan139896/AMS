@@ -86,10 +86,8 @@ def test_setup():
 
   yield
   if Exe == "Yes":
-      #time_change = datetime.timedelta(hours=5)
       new_time = datetime.datetime.now()
       ctReportHeader = new_time.strftime("%d %B %Y %I %M%p")
-
       ct = new_time.strftime("%d_%B_%Y_%I_%M%p")
 
       class PDF(FPDF):

@@ -12,7 +12,9 @@ import allure
 from sys import platform
 
 from selenium.common.exceptions import TimeoutException
+from selenium.webdriver import Keys
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
 
@@ -36,7 +38,7 @@ def test_setup():
   global ClickCounter
 
   TestName = "test_CreateBreakdownElements"
-  description = "This test scenario is to verify all the Elements present at Transfer Assignment page"
+  description = "This test scenario is to verify all the Elements present at Create Breakdown page"
   TestResult = []
   TestResultStatus = []
   TestFailStatus = []
@@ -44,7 +46,7 @@ def test_setup():
   TestDirectoryName = "test_CreateBreakdownElements"
   global Exe
   Exe="Yes"
-  Directory = 'test_TansferAssignment/'
+  Directory = 'test_CreateBreakdown/'
   if platform == "linux" or platform == "linux2":
       path = '/home/legion/office 1wayit/AVER/AverTest1/' + Directory
   elif platform == "win32" or platform == "win64":
@@ -70,7 +72,7 @@ def test_setup():
           driver = webdriver.Chrome(
               executable_path="/home/legion/office 1wayit/AVER/AverTest1/chrome/chromedriverLinux1")
       elif platform == "win32" or platform == "win64":
-          driver = webdriver.Chrome(executable_path="/AmsTest/chrome/chromedriver.exe")
+          driver = webdriver.Chrome(executable_path="D:/AMS/AmsTest/chrome/chromedriver.exe")
 
       driver.implicitly_wait(10)
       driver.maximize_window()
@@ -81,8 +83,7 @@ def test_setup():
 
   yield
   if Exe == "Yes":
-      time_change = datetime.timedelta(hours=5)
-      new_time = datetime.datetime.now() + time_change
+      new_time = datetime.datetime.now()
       ctReportHeader = new_time.strftime("%d %B %Y %I %M%p")
 
       ct = new_time.strftime("%d_%B_%Y_%I_%M%p")
@@ -181,7 +182,6 @@ def test_setup():
                     sheet1.cell(row=ii1, column=1).value = check
                     checkcount1 = 1
       #-----------------------------------------------------------------------------
-
       driver.quit()
 
 @pytest.mark.smoke
@@ -190,153 +190,250 @@ def test_VerifyAllClickables(test_setup):
         TimeSpeed = 1
         SHORT_TIMEOUT = 5
         LONG_TIMEOUT = 400
-        LOADING_ELEMENT_XPATH = "//body[@class='sidebar-xs loader_overlay']"
-        try:
-            # ---------------------------Verify Settings icon click-----------------------------
-            PageName = "Settings icon"
-            Ptitle1 = ""
-            try:
-                driver.find_element_by_xpath("//i[@class='icon-paragraph-justify3']/parent::a").click()
-                time.sleep(2)
-                driver.find_element_by_xpath("//div[@class='card card-sidebar-mobile']/ul/li[11]/a").click()
-                time.sleep(2)
+        LOADING_ELEMENT_XPATH = "//div[@class='loader']"
+        loc2 = ("D:/AMS/AmsTest/test_AmsActions/test_AmsActionsWorking/DataRecord.xlsx")
+        wb2 = openpyxl.load_workbook(loc2)
+        sheet2 = wb2.active
 
+        try:
+            # ---------------------------Verify Create and Breakdown icon click-----------------------------
+            PageName = "Create and BreakDown icon"
+            Ptitle1 = "New    BreakDown   "
+            try:
+                driver.find_element_by_xpath("//li[@data-test-id='201812201359010458611']").click()
+                time.sleep(2)
+                driver.find_element_by_xpath("//li[@title='BreakDown']").click()
                 for load in range(LONG_TIMEOUT):
                     try:
                         if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
                             time.sleep(0.5)
                     except Exception:
                         break
-
-                time.sleep(2)
+                PageTitle1 = driver.find_element_by_xpath("//h2[text()='New    BreakDown   ']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present in left menu and able to click")
                 TestResult.append(PageName + " is present in left menu and able to click")
                 TestResultStatus.append("Pass")
-            except Exception as ee:
-                print(ee)
+            except Exception:
                 TestResult.append(PageName + " is not present")
                 TestResultStatus.append("Fail")
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
+            #--------------------------------------------------------------------------------------------------
 
-            # ---------------------------Verify Page title-----------------------------
-            PageName = "Page title"
-            Ptitle1 = "Settings"
+            # ---------------------------Verify Create new breakdown window heading-----------------------------
+            PageName = "Create new breakdown window heading"
+            Ptitle1 = "New    BreakDown   "
+            try:
+                PageTitle1 = driver.find_element_by_xpath("//h2[text()='New    BreakDown   ']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present and text found is : " + PageTitle1)
+                TestResult.append(PageName + " is present and text found is : " + PageTitle1)
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present")
+                TestResultStatus.append("Fail")
+            # --------------------------------------------------------------------------------------------------
+
+            # ---------------------------Verify Asset Type text field label-----------------------------
+            PageName = "Asset Type text field label"
+            Ptitle1 = "Asset Type"
+            try:
+                PageTitle1 = driver.find_element_by_xpath("//label[@data-test-id='202203290036520952295-Label']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present and text found is : " + PageTitle1)
+                TestResult.append(PageName + " is present and text found is : " + PageTitle1)
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present ")
+                TestResultStatus.append("Fail")
+            # --------------------------------------------------------------------------------------------------
+
+            # ---------------------------Verify Asset Name text field label-----------------------------
+            PageName = "Asset Name text field label"
+            Ptitle1 = "Asset Name"
+            try:
+                PageTitle1 = driver.find_element_by_xpath("//label[@data-test-id='202203290036520951686-Label']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present and text found is : " + PageTitle1)
+                TestResult.append(PageName + " is present and text found is : " + PageTitle1)
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present ")
+                TestResultStatus.append("Fail")
+            # --------------------------------------------------------------------------------------------------
+
+            # ---------------------------Verify Breakdown Type DDL label-----------------------------
+            PageName = "Breakdown Type dropdown label"
+            Ptitle1 = "Breakdown Type"
+            try:
+                PageTitle1 = driver.find_element_by_xpath("//label[text()='Breakdown Type']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present and text found is : " + PageTitle1)
+                TestResult.append(PageName + " is present and text found is : " + PageTitle1)
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present ")
+                TestResultStatus.append("Fail")
+            # --------------------------------------------------------------------------------------------------
+
+            # ---------------------------Verify Issue Description box label-----------------------------
+            PageName = "Issue Description box label"
+            Ptitle1 = "Issue Description"
+            try:
+                PageTitle1 = driver.find_element_by_xpath("//label[text()='Issue Description']").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present and text found is : " + PageTitle1)
+                TestResult.append(PageName + " is present and text found is : " + PageTitle1)
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present ")
+                TestResultStatus.append("Fail")
+            # --------------------------------------------------------------------------------------------------
+
+            # ---------------------------Verify Attach content button-----------------------------
+            PageName = "Attach content button"
+            Ptitle1 = "Attach content"
+            try:
+                PageTitle1 = driver.find_element_by_xpath("//div[@id='pyFlowActionHTML']/span/div/div[2]//button").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present")
+                TestResult.append(PageName + " is present")
+                TestResultStatus.append("Pass")
+            except Exception:
+                TestResult.append(PageName + " is not present ")
+                TestResultStatus.append("Fail")
+            # --------------------------------------------------------------------------------------------------
+
+            # ---------------------------Verify Cancel button-----------------------------
+            PageName = "Cancel button"
+            Ptitle1 = "Cancel"
             try:
                 PageTitle1 = driver.find_element_by_xpath(
-                    "//h2[text()='Settings']").text
-                print(PageTitle1)
+                    "//button[@data-test-id='2014121801251706267665']").text
                 assert PageTitle1 in Ptitle1, PageName + " not present"
-                TestResult.append(PageName + " (Settings) is present")
+                print(PageName + " is present")
+                TestResult.append(PageName + " is present")
                 TestResultStatus.append("Pass")
             except Exception:
-                TestResult.append(PageName + " (Settings) is not present")
+                TestResult.append(PageName + " is not present ")
                 TestResultStatus.append("Fail")
-            print()
-            # ---------------------------------------------------------------------------------
+            # --------------------------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of back button on Settings page-----------------------------
-            PageName = "Back button"
-            Ptitle1 = "Back"
+            # ---------------------------Verify Submit button-----------------------------
+            PageName = "Submit button"
+            Ptitle1 = "Submit"
             try:
-                PageTitle1 = driver.find_element_by_xpath("//a[text()='Back']").text
-                print(PageTitle1)
-                assert PageTitle1 in Ptitle1, PageName + " not able to open"
-                TestResult.append(PageName + "  is present on Settings page")
+                PageTitle1 = driver.find_element_by_xpath(
+                    "//div[@data-test-id='202101201229000166203']/div[1]//button").text
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present")
+                TestResult.append(PageName + " is present")
                 TestResultStatus.append("Pass")
             except Exception:
-                TestResult.append(PageName + " is not present on Settings page")
+                TestResult.append(PageName + " is not present ")
                 TestResultStatus.append("Fail")
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
+            # --------------------------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of Staff Settings text on Settings page-----------------------------
-            PageName = "Staff Settings text"
-            Ptitle1 = "Staff Settings"
+            # ---------------------------Verify Close button-----------------------------
+            PageName = "Close button"
+            Ptitle1 = "Close"
             try:
-                PageTitle1 = driver.find_element_by_xpath("//h2[text()='Staff Settings']").text
-                print(PageTitle1)
-                assert PageTitle1 in Ptitle1, PageName + " not able to open"
-                TestResult.append(PageName + "  is present on Settings page")
+                PageTitle1 = driver.find_element_by_xpath(
+                    "//button[@data-test-id='201901261711080731178947']").get_attribute('title')
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present")
+                TestResult.append(PageName + " is present")
                 TestResultStatus.append("Pass")
             except Exception:
-                TestResult.append(PageName + " is not present on Settings page")
+                TestResult.append(PageName + " is not present ")
                 TestResultStatus.append("Fail")
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
+            # --------------------------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of role button on Settings page-----------------------------
-            PageName = "Role button"
-            Ptitle1 = "Role"
+            # ---------------------------Verify Minimize button-----------------------------
+            PageName = "Minimize button"
+            Ptitle1 = "Collapse"
             try:
-                PageTitle1 = driver.find_element_by_xpath("//a[text()='Role']").text
-                print(PageTitle1)
-                assert PageTitle1 in Ptitle1, PageName + " not able to open"
-                TestResult.append(PageName + "  is present under staff Settings")
+                PageTitle1 = driver.find_element_by_xpath(
+                    "//button[@data-test-id='201901261711080730177228']").get_attribute('title')
+                assert PageTitle1 in Ptitle1, PageName + " not present"
+                print(PageName + " is present")
+                TestResult.append(PageName + " is present")
                 TestResultStatus.append("Pass")
             except Exception:
-                TestResult.append(PageName + " is not present under staff Settings")
+                TestResult.append(PageName + " is not present ")
                 TestResultStatus.append("Fail")
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
+            # --------------------------------------------------------------------------------------------------
 
-            # ---------------------------Verify Presence of system settings text on Settings page-----------------------------
-            PageName = "System settings text"
-            Ptitle1 = "System Settings"
+            # ----------------------Verifying all the fields on Breakdown creation page-------------
             try:
-                PageTitle1 = driver.find_element_by_xpath("//h2[text()='System Settings']").text
-                print(PageTitle1)
-                assert PageTitle1 in Ptitle1, PageName + " not able to open"
-                TestResult.append(PageName + "  is present on Settings page")
-                TestResultStatus.append("Pass")
-            except Exception:
-                TestResult.append(PageName + " is not present on Settings page")
-                TestResultStatus.append("Fail")
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------
-
-            # ---------------------------Verify Presence of Buttons under system settings-----------------------------
-            inside = "System settings"
-            # ---------------loop for Buttons under system settings--------------------
-            ItemList = ["Client Status", "Notes Types", "Provider Types", "Additional Contact Types",
-                        "Profile Types", "Client Listing Alert Types", "Document Types", "Invoice Hold Reason", "Invoice Email Copy", "Service Provider Alert Types"]
-            print(len(ItemList))
-            ItemPresent = []
-            ItemNotPresent = []
-            for ii in range(len(ItemList)):
-                Text1 = ItemList[ii]
+                # ---------------Selecting asset type-----------------------------------------------
+                PageName = "Asset type text field"
                 try:
-                    Element1 = driver.find_element_by_xpath(
-                        "//div[@class='profile_form_section yellow__color']/div[2]/div/div[" + str(ii + 1) + "]/a").text
-                    time.sleep(0.5)
+                    asset_type = driver.find_element_by_xpath("//input[@id='264249ac']")
+                    asset_type.send_keys(sheet2.cell(3, 1).value)  # laptop
+                    time.sleep(2)
+                    asset_type.send_keys(Keys.DOWN)
+                    asset_type.send_keys(Keys.ENTER)
+                    time.sleep(3)
+                    print("asset type done")
+                    TestResult.append(PageName+ " is present and able to enter inputs")
+                    TestResultStatus.append("Pass")
                 except Exception:
-                    pass
-                try:
-                    assert Text1 in Element1, Text1 + " button under " + inside + "  is not present"
-                    ItemPresent.append(Text1)
-                except Exception as e1:
-                    ItemNotPresent.append(Text1)
-            if ItemPresent:
-                print("ItemPresent list is not empty")
-                ListC = ', '.join(ItemPresent)
-                TestResult.append("Below sections are present under [ " + inside + " ]\n" + ListC)
-                TestResultStatus.append("Pass")
-            if ItemNotPresent:
-                print("ItemNotPresent list is not empty")
-                ListD = ', '.join(ItemNotPresent)
-                TestResult.append("Below sections are not present under [ " + inside + " ]\n" + ListD)
-                TestResultStatus.append("Fail")
-            # ---------------------------------------------------------------------------------
+                    TestResult.append(PageName+ " is not present or not able to enter inputs")
+                    TestResultStatus.append("Fail")
+                # ---------------------------------------------------------------------------------------------
 
-            # ---------------------------------------------------------------------------------
+                # ---------------Selecting asset name-----------------------------------------------
+                PageName = "Asset name text field"
+                try:
+                    asset_name = driver.find_element_by_xpath("//input[@id='50156d96']")
+                    asset_name.send_keys(sheet2.cell(3, 2).value)
+                    time.sleep(2)
+                    asset_name.send_keys(Keys.DOWN)
+                    time.sleep(2)
+                    asset_name.send_keys(Keys.ENTER)
+                    time.sleep(3)
+                    TestResult.append(PageName+ " is present and able to enter inputs")
+                    TestResultStatus.append("Pass")
+                except Exception:
+                    TestResult.append(PageName+ " is not present or not able to enter inputs")
+                    TestResultStatus.append("Fail")
+
+                # ---------------Selecting hardcoded breakdown type--------------------------------------------------------
+                PageName = "Breakdown type dropdown"
+                try:
+                    driver.find_element_by_xpath(
+                        "//div[@class='content-item content-field item-3 remove-left-spacing remove-right-spacing flex required']//select[@id='9fa2b67b']").click()
+                    BDown_type = driver.find_element_by_xpath(
+                        "//div[@class='content-item content-field item-3 remove-left-spacing remove-right-spacing flex required']//select[@id='9fa2b67b']")
+                    bd = Select(BDown_type)
+                    bd.select_by_index(1)
+                    time.sleep(5)
+                    print("breakdown done")
+                    TestResult.append(PageName+ " is present and able to select values from dropdown list")
+                    TestResultStatus.append("Pass")
+                except Exception:
+                    TestResult.append(PageName+ " is not present or not able to select values from dropdown list")
+                    TestResultStatus.append("Fail")
+
+                # ---------------Entering Issue Description-----------------------------------------------
+                PageName = "Issue description text box"
+                try:
+                    driver.find_element_by_xpath(
+                        "//div[@class='content-item content-field item-4 remove-left-spacing remove-right-spacing flex']//textarea[@id='9638b72b']").send_keys(
+                        "Test description")
+                    time.sleep(5)
+                    TestResult.append(PageName+ " is present and able to enter inputs")
+                    TestResultStatus.append("Pass")
+                except Exception:
+                    TestResult.append(PageName+ " is not present or not able to enter inputs")
+                    TestResultStatus.append("Fail")
+            except Exception:
+                pass
 
         except Exception:
-            pass
-
+            print("Presence of all elements on breakdown create page is not verified")
+            TestResult.append("Presence of all elements on breakdown create page is not verified")
+            TestResultStatus.append("Fail")
     else:
         print()
         print("Test Case skipped as per the Execution sheet")

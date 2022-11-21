@@ -76,21 +76,24 @@ def test_setup():
           driver = webdriver.Chrome(
               executable_path="/home/legion/office 1wayit/AVER/AverTest1/chrome/chromedriverLinux1")
       elif platform == "win32" or platform == "win64":
-          driver = webdriver.Chrome(executable_path="/AmsTest/chrome/chromedriver.exe")
+          driver = webdriver.Chrome(executable_path="D:/AMS/AmsTest/chrome/chromedriver.exe")
 
       driver.implicitly_wait(10)
       driver.maximize_window()
+      # driver.get("https://pegaqa.crochetech.com/prweb")
+      # ------Dev Env URL---------
+      # driver.get("https://pegatest.crochetech.com/prweb/app/ACM/iCv8L5DiiUPcqfDwa-YAEw*/!STANDARD?pzPostData=-1389118839")
+      # ------QA Env URL----------
       driver.get("https://pegaqa.crochetech.com/prweb")
+      # driver.get("http://ns.crochetech.com:8783/prweb/app/ACM")
       enter_username("CountryHead_4")
       enter_password("Rules@12345")
       driver.find_element_by_xpath("//button[@id='sub']/span").click()
 
   yield
   if Exe == "Yes":
-      time_change = datetime.timedelta(hours=5)
-      new_time = datetime.datetime.now() + time_change
+      new_time = datetime.datetime.now()
       ctReportHeader = new_time.strftime("%d %B %Y %I %M%p")
-
       ct = new_time.strftime("%d_%B_%Y_%I_%M%p")
 
       class PDF(FPDF):
@@ -192,19 +195,27 @@ def test_setup():
 
 @pytest.mark.smoke
 def test_VerifyAllClickables(test_setup):
+    global Element1
     if Exe == "Yes":
         TimeSpeed = 2
         SHORT_TIMEOUT = 2
         LONG_TIMEOUT = 60
-        LOADING_ELEMENT_XPATH = "//body[@class='sidebar-xs loader_overlay']"
+        LOADING_ELEMENT_XPATH = "//div[@class='loader']"
         try:
             #---------------------------Verify Asset Type Table Heading -----------------------------
             PageName = "Asset type table header"
             Ptitle1 = "Add/Update Asset Type"
             try:
                 driver.find_element_by_xpath("//li[@data-test-id='202203261757220141972']").click()
+                for load in range(LONG_TIMEOUT):
+                    try:
+                        if driver.find_element_by_xpath(LOADING_ELEMENT_XPATH).is_displayed() == True:
+                            time.sleep(0.5)
+                    except Exception:
+                        break
+                driver.find_element_by_xpath("//div[@class=' flex content layout-content-inline_grid_double  content-inline_grid_double ']/child::div[1]//input[@id='pyGridActivePage']").click()
+                time.sleep(2)
                 PageTitle1 = driver.find_element_by_xpath("//h2[text()='Add/Update Asset Type']").text
-                time.sleep(10)
                 assert Ptitle1 in PageTitle1, PageName + " not able to open"
                 TestResult.append(PageName + " is present and text found is : " + PageTitle1)
                 TestResultStatus.append("Pass")
@@ -215,28 +226,219 @@ def test_VerifyAllClickables(test_setup):
             time.sleep(TimeSpeed)
             #---------------------------------------------------------------------------------------
 
-            # ---------------------------Verify Asset Table Headers -----------------------------
-            PageName = "Asset type table header"
-            TH_List = driver.find_elements_by_xpath("//table[@id='bodyTbl_right']/tbody/tr[1]/th")
-            Th_Count = len(TH_List)
-            print(Th_Count)
-            for i in range(Th_Count):
-                if i == 2:
+            # # ---------------------------Verify Presence of elements in AMS actions - Add/Update Asset Type table-----------------------------
+            inside = "AMS actions - Add/Update Asset Type"
+            # ---------------loop for Columns in table for table headers View----------
+            ItemList = ["Asset Type", "", "Action"]
+            ItemPresent = []
+            ItemNotPresent = []
+            for ii in range(len(ItemList)):
+                Text1 = ItemList[ii]
+                print(ii)
+                try:
+                        Element1 = driver.find_element_by_xpath(
+                            "//table[@pl_prop_class='AMS-Data-AssetTypes']//tbody/tr[1]/th[" + str(
+                                ii + 1) + "]//div[@class='cellIn ']").text
+                        print(Element1)
+                except Exception:
                     pass
-                else:
-                    try:
-                        PageTitle1 = driver.find_element_by_xpath("//table[@id='bodyTbl_right']/tbody/tr[1]/th["+str[i+1]+"]").get_attribute("data-attribute-name")
-                        time.sleep(10)
-                        print(PageTitle1)
-                        assert PageTitle1 in TH_List, PageName + " not able to open"
-                        TestResult.append(PageName + " is present and text found is : " + PageTitle1)
-                        TestResultStatus.append("Pass")
-                    except Exception:
-                        TestResult.append(PageTitle1 + "table header is not found in Asset type table")
-                        TestResultStatus.append("Fail")
-            print()
-            time.sleep(TimeSpeed)
-            # ---------------------------------------------------------------------------------------
+                try:
+                    if Element1 == "":
+                        pass
+                    else:
+                        assert Text1 in Element1, Text1 + " column under " + inside + " table is not present"
+                        ItemPresent.append(Text1)
+                except Exception as e1:
+                    ItemNotPresent.append(Text1)
+            if ItemPresent:
+                print("ItemPresent list is not empty")
+                ListC = ', '.join(ItemPresent)
+                TestResult.append("Below columns are present under [ " + inside + " ] table\n" + ListC)
+                TestResultStatus.append("Pass")
+            if ItemNotPresent:
+                print("ItemNotPresent list is not empty")
+                ListD = ', '.join(ItemNotPresent)
+                TestResult.append("Below columns are not present under [ " + inside + " ] table\n" + ListD)
+                TestResultStatus.append("Fail")
+            # # ---------------------------------------------------------------------------------
+
+            # # ---------------------------Verify Presence of Buttons in Add/Update Asset Type table-----------------------------
+            inside = "Add/Update Asset Type"
+            # ---------------loop for Columns in table for table headers View----------
+            ItemList = ["+ Asset Type", "Import", "Export"]
+            ItemPresent = []
+            ItemNotPresent = []
+            for ii in range(len(ItemList)):
+                Text1 = ItemList[ii]
+                print(ii)
+                try:
+                    Element1 = driver.find_element_by_xpath(
+                        "//div[@class=' flex content layout-content-inline_grid_double  content-inline_grid_double ']/child::div[1]//div[@id='PEGA_GRID_SKIN']/div[3]/table/tbody/tr/td["+str(ii+1)+"]//a").text
+                    print(Element1)
+                except Exception:
+                    pass
+                try:
+                    assert Text1 in Element1, Text1 + " column under " + inside + " table is not present"
+                    ItemPresent.append(Text1)
+                except Exception as e1:
+                    ItemNotPresent.append(Text1)
+            if ItemPresent:
+                print("ItemPresent list is not empty")
+                ListC = ', '.join(ItemPresent)
+                TestResult.append("Below buttons are present under [ " + inside + " ] table\n" + ListC)
+                TestResultStatus.append("Pass")
+            if ItemNotPresent:
+                print("ItemNotPresent list is not empty")
+                ListD = ', '.join(ItemNotPresent)
+                TestResult.append("Below buttons are not present under [ " + inside + " ] table\n" + ListD)
+                TestResultStatus.append("Fail")
+            # # ---------------------------------------------------------------------------------
+
+            # # ---------------------------Verify Presence of elements in AMS actions - Add/Update Assets table-----------------------------
+            inside = "AMS actions - Add/Update Assets"
+            # ---------------loop for Columns in table for table headers View----------
+            ItemList = ["Asset", "Specification", "Whether In Use", "Action"]
+            ItemPresent = []
+            ItemNotPresent = []
+            for ii in range(len(ItemList)):
+                Text1 = ItemList[ii]
+                print(ii)
+                try:
+                    Element1 = driver.find_element_by_xpath(
+                        "//table[@pl_prop_class='AMS-Data-Assets']//tbody/tr[1]/th[" + str(
+                            ii + 1) + "]//div[@class='cellIn ']").text
+                    print(Element1)
+                except Exception:
+                    pass
+                try:
+                    assert Text1 in Element1, Text1 + " column under " + inside + " table is not present"
+                    ItemPresent.append(Text1)
+                except Exception as e1:
+                    ItemNotPresent.append(Text1)
+            if ItemPresent:
+                print("ItemPresent list is not empty")
+                ListC = ', '.join(ItemPresent)
+                TestResult.append("Below columns are present under [ " + inside + " ] table\n" + ListC)
+                TestResultStatus.append("Pass")
+            if ItemNotPresent:
+                print("ItemNotPresent list is not empty")
+                ListD = ', '.join(ItemNotPresent)
+                TestResult.append("Below columns are not present under [ " + inside + " ] table\n" + ListD)
+                TestResultStatus.append("Fail")
+            # # ---------------------------------------------------------------------------------
+
+            # # ---------------------------Verify Presence of Buttons under Add/Update Assets table-----------------------------
+            inside = "Add/Update Assets"
+            # ---------------loop for Columns in table for table headers View----------
+            ItemList = ["+ Asset", "Import", "Export"]
+            ItemPresent = []
+            ItemNotPresent = []
+            for ii in range(len(ItemList)):
+                Text1 = ItemList[ii]
+                print(ii)
+                try:
+                    Element1 = driver.find_element_by_xpath(
+                        "//div[@class=' flex content layout-content-inline_grid_double  content-inline_grid_double ']/child::div[2]//div[@id='PEGA_GRID_SKIN']/div[3]/table/tbody/tr/td["+str(ii+1)+"]//a").text
+                    print(Element1)
+                except Exception:
+                    pass
+                try:
+                    assert Text1 in Element1, Text1 + " column under " + inside + " table is not present"
+                    ItemPresent.append(Text1)
+                except Exception as e1:
+                    ItemNotPresent.append(Text1)
+            if ItemPresent:
+                print("ItemPresent list is not empty")
+                ListC = ', '.join(ItemPresent)
+                TestResult.append("Below buttons are present under [ " + inside + " ] table\n" + ListC)
+                TestResultStatus.append("Pass")
+            if ItemNotPresent:
+                print("ItemNotPresent list is not empty")
+                ListD = ', '.join(ItemNotPresent)
+                TestResult.append("Below buttons are not present under [ " + inside + " ] table\n" + ListD)
+                TestResultStatus.append("Fail")
+            # # ---------------------------------------------------------------------------------
+
+
+            # ------Scrolling Page----------------------------------------------------------
+            for scrolldown in range(1, 10):
+                time.sleep(2)
+                try:
+                    driver.find_element_by_xpath(
+                        "//div[@data-test-id='202206080844470310974']//table[@id='grid-desktop-paginator']//td[7]//button")
+                    break
+                except Exception:
+                    # ActionChains(driver).key_down(Keys.).perform()
+                    print("Inside Excep")
+                    ActionChains(driver).key_down(Keys.PAGE_DOWN).perform()
+                    print("Page Down")
+                    pass
+            # -----------------------------------------------------------------------------------------------
+
+            # # ---------------------------Verify Presence of elements in AMS actions - Create/Update Activity table-----------------------------
+            inside = "AMS actions - Create/Update Activity"
+            # ---------------loop for Columns in table for table headers View----------
+            ItemList = ["Activity", "Frequency", "Planning Days", "Skill Required", "Action"]
+            ItemPresent = []
+            ItemNotPresent = []
+            for ii in range(len(ItemList)):
+                Text1 = ItemList[ii]
+                print(ii)
+                try:
+                    Element1 = driver.find_element_by_xpath(
+                        "//table[@pl_prop_class='AMS-Data-Activities']//tbody/tr[1]/th[" + str(
+                            ii + 1) + "]//div[@class='cellIn ']").text
+                    print(Element1)
+                except Exception:
+                    pass
+                try:
+                    assert Text1 in Element1, Text1 + " column under " + inside + " table is not present"
+                    ItemPresent.append(Text1)
+                except Exception as e1:
+                    ItemNotPresent.append(Text1)
+            if ItemPresent:
+                print("ItemPresent list is not empty")
+                ListC = ', '.join(ItemPresent)
+                TestResult.append("Below columns are present under [ " + inside + " ] table\n" + ListC)
+                TestResultStatus.append("Pass")
+            if ItemNotPresent:
+                print("ItemNotPresent list is not empty")
+                ListD = ', '.join(ItemNotPresent)
+                TestResult.append("Below columns are not present under [ " + inside + " ] table\n" + ListD)
+                TestResultStatus.append("Fail")
+            # # ---------------------------------------------------------------------------------
+
+            # # ---------------------------Verify Presence of Buttons under Create/Update Activity table-----------------------------
+            inside = "Create/Update Activity"
+            # ---------------loop for Columns in table for table headers View----------
+            ItemList = ["+ Activity", "Import", "Export"]
+            ItemPresent = []
+            ItemNotPresent = []
+            for ii in range(len(ItemList)):
+                Text1 = ItemList[ii]
+                print(ii)
+                try:
+                    Element1 = driver.find_element_by_xpath(
+                        "//div[@data-test-id='202206080844470310974']//div[@id='PEGA_GRID_SKIN']/div[3]/table/tbody/tr/td["+str(ii+1)+"]//a").text
+                    print(Element1)
+                except Exception:
+                    pass
+                try:
+                    assert Text1 in Element1, Text1 + " column under " + inside + " table is not present"
+                    ItemPresent.append(Text1)
+                except Exception as e1:
+                    ItemNotPresent.append(Text1)
+            if ItemPresent:
+                print("ItemPresent list is not empty")
+                ListC = ', '.join(ItemPresent)
+                TestResult.append("Below buttons are present under [ " + inside + " ] table\n" + ListC)
+                TestResultStatus.append("Pass")
+            if ItemNotPresent:
+                print("ItemNotPresent list is not empty")
+                ListD = ', '.join(ItemNotPresent)
+                TestResult.append("Below buttons are not present under [ " + inside + " ] table\n" + ListD)
+                TestResultStatus.append("Fail")
+            # # ---------------------------------------------------------------------------------
 
         except Exception as err:
             print(err)
